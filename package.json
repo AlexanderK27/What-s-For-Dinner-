@@ -1,0 +1,28 @@
+{
+  "name": "whats-for-dinner",
+  "version": "1.0.0",
+  "description": "Find out what to eat today",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "server": "env-cmd -f ./config/dev.env nodemon index.js",
+    "client": "npm run serve --prefix client"
+  },
+  "keywords": [
+    "Vue",
+    "Express",
+    "Less",
+    "Food",
+    "REST"
+  ],
+  "author": "Oleksandr Kolomiichuk <alexkolom27@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.18"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "nodemon": "^2.0.4"
+  }
+}
