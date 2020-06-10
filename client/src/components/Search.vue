@@ -15,29 +15,20 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
     data() {
         return {
-            searchValue: '',
-            hostname: window.location.hostname === 'localhost' ? 'localhost:8080' : window.location.hostname
+            searchValue: ''
         }
     },
     methods: {
+        ...mapActions(['fetchRecipes']),
         clearInput() {
             this.searchValue = ''
         },
-        async getRecipes() {
-            try {
-                const response = await fetch(`${window.location.protocol}//${this.hostname}/api/recipes/search?title=${this.searchValue}`)
-                const recipes = await response.json()
-
-                if (recipes.message) {
-                    return this.$emit('get-recipes', false, recipes.message)
-                }
-                this.$emit('get-recipes', recipes.results)
-            } catch (e) {
-                console.log(e)
-            }
+        getRecipes() {
+            this.fetchRecipes(this.searchValue)
         }
     }
 }

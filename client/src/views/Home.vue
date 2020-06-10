@@ -9,63 +9,51 @@
             </router-link>
         </header>
         <main>
-            <Search @get-recipes="getRecipes" />
-            <div class="recipes" v-if="recipes.length">
+            <Search />
+            <div class="recipes" v-if="allRecipes.length">
                 <RecipeCard 
-                    v-for="recipe of recipes"
+                    v-for="recipe of allRecipes"
                     :recipe="recipe"
                     :key="recipe.id"
                 />
             </div>
-            <div v-else-if="message">
-                <p>{{message}}</p>
-            </div>
+            <div v-else-if="message"><p>{{message}}</p></div>
+            <div v-else-if="loading"><Loader /></div>
+            <div v-else></div>
             
         </main>
-        <div>
+        <!-- <div>
             <button @click="getOneRecipe" >Get recipe</button>
-        </div>
+        </div> -->
     </div>
 </template>
 
 <script>
 import Search from '../components/Search'
 import RecipeCard from '../components/RecipeCard'
+import Loader from '../ui/Loader'
+import { mapGetters } from 'vuex'
 export default {
     name: 'Home',
+    computed: mapGetters(['allRecipes', 'message', 'loading']),
     data() {
-        return {
-            recipes: [],
-            hostname: window.location.hostname === 'localhost' ? 'localhost:8080' : window.location.hostname,
-            message: false,
-            loading: false
-        }
+        return {}
     },
     components: {
         Search,
-        RecipeCard
+        RecipeCard,
+        Loader
     },
     methods: {
-        getOneRecipe: async function getOneRecipe() {
-            try {
-                const response = await fetch(`${window.location.protocol}//${this.hostname}/api/recipes/723984`)
-                const recipe = await response.json()
-                console.log(recipe)
-            } catch (e) {
-                console.log(e)
-            }
-        },
-        getRecipes(recipes, message) {
-            if (message) {
-                return this.message = message
-            }
-
-            this.recipes = recipes
-
-            if (this.message) {
-                this.message = false
-            }
-        }
+        // getOneRecipe: async function getOneRecipe() {
+        //     try {
+        //         const response = await fetch(`${window.location.protocol}//${this.hostname}/api/recipes/723984`)
+        //         const recipe = await response.json()
+        //         console.log(recipe)
+        //     } catch (e) {
+        //         console.log(e)
+        //     }
+        // }
     }
 }
 </script>
