@@ -10,9 +10,17 @@ const apiKey = `apiKey=${process.env.SP_API_KEY}`
 // Gets list of recipes
 router.get('/search', async (req, res) => {
     // TODO: implement query params
+    let qParams
+    if (req.query.title) {
+        qParams = `&query=${req.query.title}`
+    }
     try {
-        const response = await fetch(`${spURL}/search?${apiKey}`)
+        const response = await fetch(`${spURL}/search?${apiKey}${qParams}`)
         const recipes = await response.json()
+
+        if (!recipes.results.length) {
+            return res.status(404).json({ message: "Sorry, there are no such recipes" })
+        }
 
         res.status(200).json(recipes)
     } catch (e) {
