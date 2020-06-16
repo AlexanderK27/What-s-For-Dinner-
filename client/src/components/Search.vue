@@ -1,37 +1,94 @@
 <template>
     <div class="search-wrapper">
         <SelectedFilters />
-        <div class="search">
-            <div class="filter">
+        <div class="search" v-if="searchType === 'word'">
+            <div class="icon filter">
                 <i 
                     class="material-icons md-36"
                     @click="openFilter"
                 >construction</i>
             </div>
-            <form @submit.prevent="getRecipes">
+            <form @submit.prevent="fetchRecipes(searchValue)">
                 <input type="text" v-model="searchValue" />
                 <i 
                     v-if="searchValue !== ''" 
                     class="material-icons md-24 clear"
                     @click="clearInput"
                 >clear</i>
-                <button>search</button>
+                <button type="submit">search</button>
             </form> 
         </div>
+        <div class="search" v-else >
+            <div class="icon search">
+                <i 
+                    class="material-icons md-36"
+                    @click="fetchByIngredients"
+                >search</i>
+            </div>
+            <form @submit.prevent="addIngredient">
+                <input 
+                    type="text" 
+                    ref="searchInput"
+                    v-model="enteredIngredient" 
+                    placeholder="Your ingredient" 
+                    @input="prepareSuggestions" 
+                    @keyup.down.prevent="focusOnHints"
+                />
+                <button type="submit">add one</button>
+                <div v-if="suggestions.length && enteredIngredient" class="search-hints">
+                    <SearchHints 
+                        :suggestions="suggestions" 
+                        :match="enteredIngredient"
+                        :focused="passFocus"
+                        @pick-ingredient="pushToSearchInput"
+                        @focus-on-input="focusInput"
+                    />
+                </div>
+            </form> 
+        </div>
+        <div>
+            <form>
+                <input 
+                    type="radio" 
+                    id="byWord" 
+                    name="searchType" 
+                    value="word" 
+                    v-model="searchType" 
+                />
+                <label for="byWord">Search by word in name</label>
+                <input 
+                    type="radio" 
+                    id="byIngredients" 
+                    name="searchType" 
+                    value="ingredient" 
+                    v-model="searchType" 
+                />
+                <label for="byIngredients">Search by ingredients</label>
+            </form>
+        </div>
+        <pre>{{usersIngredients}}</pre>
     </div>
 </template>
 
 <script>
 import { mapMutations, mapActions } from 'vuex'
-import SelectedFilters from '../components/SelectedFilters'
+import SelectedFilters from './SelectedFilters'
+import SearchHints from './SearchHints'
+import ingredients from '../db/ingredients'
 export default {
     data() {
         return {
-            searchValue: ''
+            searchType: 'word',
+            searchValue: '',
+            enteredIngredient: '',
+            usersIngredients: [],
+            suggestions: [],
+            passFocus: false
         }
     },
     components: {
         SelectedFilters,
+        SearchHints
     },
     methods: {
         ...mapActions(['fetchRecipes']),
@@ -39,11 +96,36 @@ export default {
         clearInput() {
             this.searchValue = ''
         },
-        getRecipes() {
-            this.fetchRecipes(this.searchValue)
+        fetchByIngredients() {
+
         },
         openFilter() {
             this.showFilterWindow(true)
+        },
+        addIngredient() {
+            this.usersIngredients.push(this.enteredIngredient)
+            this.enteredIngredient = ''
+        },
+        pushToSearchInput(ingredient) {
+            this.enteredIngredient = ingredient
+            this.prepareSuggestions(ingredient)
+            this.focusInput()
+        },
+        prepareSuggestions() {
+            if (this.enteredIngredient.length > 2) {
+                const match = ingredients.filter(item => item.includes(this.enteredIngredient))
+                match.sort((a, b) => a.length - b.length)
+                this.suggestions = match.slice(0, 5)
+            } else {
+                this.suggestions = []
+            }
+        },
+        focusInput() {
+            this.$refs.searchInput.focus()
+            this.passFocus = false
+        },
+        focusOnHints() {
+            this.passFocus = true
         }
     }
 }
@@ -59,13 +141,13 @@ export default {
         width: 60%;
         margin: 50px auto;
 
-        .filter {
+        .icon {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 42px;
             height: 42px;
-            margin-right: 8px;
+            margin: 0 8px 0 0;
 
             i {
                 font-size: 32px;
@@ -92,6 +174,10 @@ export default {
                 font-weight: bold;
                 font-size: 16px;
                 outline: none;
+
+                &::placeholder {
+                    color: #BBBBBB;
+                }
             }
 
             .clear {
@@ -124,6 +210,11 @@ export default {
                 border-bottom-right-radius: 20px;
                 outline: none;
                 cursor: pointer;
+            }
+
+            .search-hints {
+                position: absolute;
+                min-width: 340px;
             }
         }
     }
