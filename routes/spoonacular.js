@@ -5,15 +5,31 @@ const router = Router()
 
 const spURL = 'https://api.spoonacular.com/recipes'
 const apiKey = `apiKey=${process.env.SP_API_KEY}`
-// const fetchParams = {method: 'GET', body: null, headers: { 'Content-Type': 'application/json' }}
 
 // Gets list of recipes
 router.get('/search', async (req, res) => {
-    // TODO: implement query params
-    let qParams
-    if (req.query.title) {
+    let qParams = ''
+    if (req.query.title && req.query.title !== '') {
         qParams = `&query=${req.query.title}`
     }
+
+    if (req.query.filters && req.query.filters !== '') {
+        const filters = JSON.parse(req.query.filters)
+
+        if (filters.diets.length > 1) {
+            return res.status(400).json({ message: 'You cannot select more then one diet' })
+        } 
+        if (filters.diets.length) {
+            qParams = qParams + `&diets=${filters.diets[0]}`
+        } 
+        if (filters.cuisines.length) {
+            qParams = qParams + `&cuisine=${filters.cuisines.join(',')}`
+        } 
+        if (filters.intolerances.length) {
+            qParams = qParams + `&intolerances=${filters.intolerances.join(',')}`
+        }
+    }
+
     try {
         const response = await fetch(`${spURL}/search?${apiKey}${qParams}`)
         const recipes = await response.json()

@@ -9,10 +9,13 @@
             </router-link>
         </header>
         <main>
+            <RecipeWindow v-if="recipeWindow" />
+            <FilterWindow v-if="filterWindow"/>
             <Search />
             <div class="recipes" v-if="allRecipes.length">
                 <RecipeCard 
                     v-for="recipe of allRecipes"
+                    @get-recipe="openRecipeWindow"
                     :recipe="recipe"
                     :key="recipe.id"
                 />
@@ -20,40 +23,35 @@
             <div v-else-if="message"><p>{{message}}</p></div>
             <div v-else-if="loading"><Loader /></div>
             <div v-else></div>
-            
         </main>
-        <!-- <div>
-            <button @click="getOneRecipe" >Get recipe</button>
-        </div> -->
     </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import Search from '../components/Search'
 import RecipeCard from '../components/RecipeCard'
+import RecipeWindow from '../components/RecipeWindow'
+import FilterWindow from '../components/FilterWindow'
 import Loader from '../ui/Loader'
-import { mapGetters } from 'vuex'
 export default {
     name: 'Home',
-    computed: mapGetters(['allRecipes', 'message', 'loading']),
+    computed: mapGetters(['allRecipes', 'message', 'loading', 'recipeWindow', 'filterWindow']),
     data() {
         return {}
     },
     components: {
         Search,
         RecipeCard,
+        RecipeWindow,
+        FilterWindow,
         Loader
     },
     methods: {
-        // getOneRecipe: async function getOneRecipe() {
-        //     try {
-        //         const response = await fetch(`${window.location.protocol}//${this.hostname}/api/recipes/723984`)
-        //         const recipe = await response.json()
-        //         console.log(recipe)
-        //     } catch (e) {
-        //         console.log(e)
-        //     }
-        // }
+        ...mapActions(['fetchOneRecipe']),
+        openRecipeWindow(id) {
+            this.fetchOneRecipe(id)
+        }
     }
 }
 </script>

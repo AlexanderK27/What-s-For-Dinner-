@@ -1,5 +1,5 @@
 <template>
-    <div class="recipe">
+    <div class="recipe" @click="$emit('get-recipe', recipe.id)">
         <img 
             :src="'https://spoonacular.com/recipeImages/' + recipe.id + '-312x231.jpg'"
             :alt="recipe.title + ' image'"
@@ -43,6 +43,12 @@ export default {
     background-color: #DFFCCE;
     box-shadow: 0px 4px 4px hsla(0, 0%, 0%, 0.2);
     border: 2px solid #CDFCB0;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+        border: 2px solid #89C167;
+    }
 
     img {
         height: 100%;
