@@ -27,6 +27,9 @@ export default {
         }
     },
     mutations: {
+        setSearchType(state, type) {
+            state.searchType = type
+        },
         setCuisines(state, cuisines) {
             state.cuisines = cuisines
         },
@@ -38,9 +41,16 @@ export default {
         },
         setSelectedFilters(state, filters) {
             state.selectedFilters = filters
+        },
+        setUsersIngredients(state, ingredients) {
+            state.usersIngredients = ingredients
+        },
+        removeUsersIngredient(state, ingredient) {
+            state.usersIngredients = state.usersIngredients.filter(ing => ing !== ingredient)
         }
     },
     state: {
+        searchType: 'word',
         selectedFilters: {
             cuisines: [],
             diets: [],
@@ -76,9 +86,13 @@ export default {
             {name: 'Sesame', checked: false},{name: 'Shellfish', checked: false},
             {name: 'Soy', checked: false},{name: 'Sulfite', checked: false},
             {name: 'Tree Nut', checked: false},{name: 'Wheat', checked: false}
-        ]
+        ],
+        usersIngredients: []
     },
     getters: {
+        searchType(state) {
+            return state.searchType
+        },
         stdFilters(state) {
             return {
                 cuisines: state.cuisines,
@@ -88,6 +102,9 @@ export default {
         },
         selectedFilters(state) {
             return state.selectedFilters
+        },
+        usersIngredients(state) {
+            return state.usersIngredients
         }
     }
 }

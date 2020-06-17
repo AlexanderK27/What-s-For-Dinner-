@@ -1,5 +1,5 @@
 <template>
-    <div class="block">
+    <div class="block" v-if="searchType === 'word'">
         <div 
             v-for="(cuisine, idx) of selectedFilters.cuisines"
             :key="cuisine.name + idx"
@@ -34,13 +34,29 @@
             >clear</i>
         </div>
     </div>
+    <div class="block" v-else>
+        <div 
+            v-for="(ingredient, idx) of usersIngredients"
+            :key="ingredient + idx"
+            class="filter"
+        >
+            <p>{{ingredient}}</p>
+            <i 
+                class="material-icons md-18" 
+                @click="removeUsersIngredient(ingredient)"
+            >clear</i>
+        </div>
+    </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
-    computed: mapGetters(['selectedFilters']),
-    methods: mapActions(['removeFilter'])
+    computed: mapGetters(['searchType', 'selectedFilters', 'usersIngredients']),
+    methods: {
+        ...mapActions(['removeFilter']),
+        ...mapMutations(['removeUsersIngredient'])
+    }
 }
 </script>
 
@@ -49,17 +65,20 @@ export default {
     display: flex;
     flex-wrap: wrap;
     width: 60%;
+    min-height: 52px;
     margin: 0 auto;
     padding: 16px 0px;
 
     .filter {
         display: flex;
         align-items: center;
-        background-color: #ddd;
+        box-sizing: border-box;
+        max-height: 36px;
         margin: 8px 2px;
         padding: 10px 16px;
         font-size: 0.9rem;
         border-radius: 30px;
+        background-color: #ddd;
         transition: 0.2s;
         -moz-user-select: none;
         -ms-user-select: none;

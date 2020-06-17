@@ -9,7 +9,11 @@
                 >construction</i>
             </div>
             <form @submit.prevent="fetchRecipes(searchValue)">
-                <input type="text" v-model="searchValue" />
+                <input 
+                    type="text" 
+                    placeholder="Dish name"
+                    v-model="searchValue" 
+                />
                 <i 
                     v-if="searchValue !== ''" 
                     class="material-icons md-24 clear"
@@ -22,7 +26,7 @@
             <div class="icon search">
                 <i 
                     class="material-icons md-36"
-                    @click="fetchByIngredients"
+                    @click="fetchRecipesByIngredients(usersIngredients)"
                 >search</i>
             </div>
             <form @submit.prevent="addIngredient">
@@ -46,7 +50,7 @@
                 </div>
             </form> 
         </div>
-        <div>
+        <div class="search-type-selector">
             <form>
                 <input 
                     type="radio" 
@@ -71,7 +75,7 @@
 </template>
 
 <script>
-import { mapMutations, mapActions } from 'vuex'
+import { mapMutations, mapActions, mapGetters } from 'vuex'
 import SelectedFilters from './SelectedFilters'
 import SearchHints from './SearchHints'
 import ingredients from '../db/ingredients'
@@ -81,7 +85,6 @@ export default {
             searchType: 'word',
             searchValue: '',
             enteredIngredient: '',
-            usersIngredients: [],
             suggestions: [],
             passFocus: false
         }
@@ -90,21 +93,27 @@ export default {
         SelectedFilters,
         SearchHints
     },
+    computed: mapGetters(['usersIngredients']),
+    watch: {
+        searchType: 'changeSearchType'
+    },
     methods: {
-        ...mapActions(['fetchRecipes']),
-        ...mapMutations(['showFilterWindow']),
+        ...mapActions(['fetchRecipes', 'fetchRecipesByIngredients']),
+        ...mapMutations(['setSearchType', 'showFilterWindow', 'setUsersIngredients']),
         clearInput() {
             this.searchValue = ''
         },
-        fetchByIngredients() {
-
+        changeSearchType(type) {
+            this.setSearchType(type)
         },
         openFilter() {
             this.showFilterWindow(true)
         },
         addIngredient() {
-            this.usersIngredients.push(this.enteredIngredient)
-            this.enteredIngredient = ''
+            if (ingredients.includes(this.enteredIngredient) && !this.usersIngredients.includes(this.enteredIngredient)) {
+                this.setUsersIngredients(this.usersIngredients.concat([this.enteredIngredient]))
+                this.enteredIngredient = ''
+            }
         },
         pushToSearchInput(ingredient) {
             this.enteredIngredient = ingredient
@@ -139,7 +148,7 @@ export default {
         position: relative;
         display: flex;
         width: 60%;
-        margin: 50px auto;
+        margin: 50px auto 14px;
 
         .icon {
             display: flex;
@@ -216,6 +225,14 @@ export default {
                 position: absolute;
                 min-width: 340px;
             }
+        }
+    }
+
+    .search-type-selector {
+        margin-bottom: 30px;
+
+        input, label {
+            cursor: pointer;
         }
     }
 }

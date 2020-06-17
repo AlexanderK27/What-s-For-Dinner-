@@ -35,7 +35,26 @@ router.get('/search', async (req, res) => {
         const recipes = await response.json()
 
         if (!recipes.results.length) {
-            return res.status(404).json({ message: "Sorry, there are no such recipes" })
+            return res.status(404).json({ message: "Sorry, we do not have such recipes" })
+        }
+
+        res.status(200).json(recipes)
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+// Get recipes by ingredients
+router.get('/searchByIngredients', async (req, res) => {
+    const ingredients = JSON.parse(req.query.ing)
+    const qParams = '&ingredients=' + ingredients.join(',+')
+
+    try {
+        const response = await fetch(`${spURL}/findByIngredients?${apiKey}${qParams}`)
+        const recipes = await response.json()
+
+        if (!recipes.length) {
+            return res.status(404).json({ message: "Sorry, we do not have such recipes"  })
         }
 
         res.status(200).json(recipes)
@@ -51,7 +70,7 @@ router.get('/:id', async (req, res) => {
         const recipe = await response.json()
 
         if (!recipe) {
-            return res.status(404).json({ message: 'Recipe not found' })
+            return res.status(404).json({ message: "Recipe not found" })
         }
 
         res.status(200).json(recipe)

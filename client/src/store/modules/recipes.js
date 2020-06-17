@@ -36,6 +36,38 @@ export default {
 
             ctx.commit('setLoading', false)
         },
+        async fetchRecipesByIngredients(ctx, ingredients) {
+            ctx.commit('setLoading', true)
+
+            if (ctx.state.message) {
+                ctx.commit('setMessage', null)
+            } 
+            
+            if (ctx.state.recipes.length) {
+                ctx.commit('updateRecipes', [])
+            }
+
+            const usersIngredients = JSON.stringify(ingredients)
+
+            try {
+                const response = await fetch(`${window.location.protocol}//${hostname}/api/recipes/searchByIngredients?ing=${usersIngredients}`)
+                const recipes = await response.json()
+                console.log(recipes)
+
+                if (recipes.message) {
+                    return (
+                        ctx.commit('setMessage', recipes.message),
+                        ctx.commit('setLoading', false)
+                    )
+                }
+                
+                ctx.commit('updateRecipes', recipes)
+            } catch (e) {
+                console.log(e)
+            }
+
+            ctx.commit('setLoading', false)
+        },
         async fetchOneRecipe(ctx, id) {
             ctx.commit('showRecipeWindow', true)
             ctx.commit('setLoading', true)
