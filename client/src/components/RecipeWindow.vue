@@ -53,7 +53,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="instructions">
+                <div class="instructions" v-if="recipe.analyzedInstructions.length">
                     <ol>
                         <li 
                             v-for="(step, idx) in recipe.analyzedInstructions[0].steps"

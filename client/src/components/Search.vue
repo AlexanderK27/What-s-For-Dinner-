@@ -70,7 +70,6 @@
                 <label for="byIngredients">Search by ingredients</label>
             </form>
         </div>
-        <pre>{{usersIngredients}}</pre>
     </div>
 </template>
 

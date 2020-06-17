@@ -9,7 +9,7 @@
                 <i class="material-icons md-18">star_outline</i>
             </div>
             <p class="title">{{recipe.title}}</p>
-            <div class="info-wrapper">
+            <div class="info-wrapper" v-if="recipe.readyInMinutes">
                 <div class="info time">
                     <p>{{recipe.readyInMinutes}}</p>
                     <i class="material-icons md-18">access_time</i>
@@ -17,6 +17,16 @@
                 <div class="info servings">
                     <p>{{recipe.servings}}</p>
                     <i class="material-icons md-18">restaurant</i>
+                </div>
+            </div>
+            <div class="info-wrapper" v-else>
+                <div class="info unused">
+                    <p>{{recipe.unusedIngredients.length}}</p>
+                    <i class="material-icons md-18">not_interested</i>
+                </div>
+                <div class="info missed">
+                    <p>{{recipe.missedIngredientCount}}</p>
+                    <i class="material-icons md-18">playlist_add</i>
                 </div>
             </div>
         </div>
@@ -102,9 +112,15 @@ export default {
                     color: #FF7D24;
                 }
 
-                &.servings {
+                &.servings, &.missed {
                     // background-color: #FF9191;
                     color: #DB1818;
+                }
+
+                &.missed {
+                    i {
+                        font-size: 22px;
+                    }
                 }
             }
         }
