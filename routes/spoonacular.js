@@ -31,7 +31,7 @@ router.get('/search', async (req, res) => {
     }
 
     try {
-        const response = await fetch(`${spURL}/search?${apiKey}${qParams}`)
+        const response = await fetch(`${spURL}/search?${apiKey}${qParams}&number=50`)
         const recipes = await response.json()
 
         if (!recipes.results.length) {
@@ -50,7 +50,7 @@ router.get('/searchByIngredients', async (req, res) => {
     const qParams = '&ingredients=' + ingredients.join(',+')
 
     try {
-        const response = await fetch(`${spURL}/findByIngredients?${apiKey}${qParams}`)
+        const response = await fetch(`${spURL}/findByIngredients?${apiKey}${qParams}&number=50`)
         const recipes = await response.json()
 
         if (!recipes.length) {

@@ -12,13 +12,17 @@
             <RecipeWindow v-if="recipeWindow" />
             <FilterWindow v-if="filterWindow"/>
             <Search />
-            <div class="recipes" v-if="allRecipes.length">
-                <RecipeCard 
-                    v-for="recipe of allRecipes"
-                    @get-recipe="openRecipeWindow"
-                    :recipe="recipe"
-                    :key="recipe.id"
-                />
+            <div class="recipes-wrapper" v-if="allRecipes.length">
+                <Pagination :amountOfPages="allRecipes.length" />
+                <div class="recipes">
+                    <RecipeCard 
+                        v-for="recipe of allRecipes[pageNumber - 1]"
+                        @get-recipe="openRecipeWindow"
+                        :recipe="recipe"
+                        :key="recipe.id"
+                    />
+                </div>
+                <Pagination :amountOfPages="allRecipes.length" />
             </div>
             <div v-else-if="message"><p>{{message}}</p></div>
             <div v-else-if="loading"><Loader /></div>
@@ -31,22 +35,33 @@
 import { mapGetters, mapActions } from 'vuex'
 import Search from '../components/Search'
 import RecipeCard from '../components/RecipeCard'
+import Pagination from '../components/Pagination'
 import RecipeWindow from '../components/RecipeWindow'
 import FilterWindow from '../components/FilterWindow'
 import Loader from '../ui/Loader'
 export default {
     name: 'Home',
-    computed: mapGetters(['allRecipes', 'message', 'loading', 'recipeWindow', 'filterWindow']),
     data() {
-        return {}
+        return {
+            // recipes: 
+        }
     },
     components: {
         Search,
         RecipeCard,
+        Pagination,
         RecipeWindow,
         FilterWindow,
         Loader
     },
+    computed: mapGetters([
+        'allRecipes', 
+        'pageNumber', 
+        'message', 
+        'loading', 
+        'recipeWindow', 
+        'filterWindow'
+    ]),
     methods: {
         ...mapActions(['fetchOneRecipe']),
         openRecipeWindow(id) {
@@ -104,10 +119,16 @@ main {
     width: 80%;
     margin: 0 auto;
     
-    .recipes {
+    .recipes-wrapper {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center; 
+        flex-direction: column;
+        align-items: center;
+
+        .recipes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; 
+        }
     }
 }
 </style>

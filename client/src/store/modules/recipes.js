@@ -29,6 +29,7 @@ export default {
                     )
                 }
                 
+                ctx.commit('changePageNumber', 1)
                 ctx.commit('updateRecipes', recipes.results)
             } catch (e) {
                 console.log(e)
@@ -61,6 +62,7 @@ export default {
                     )
                 }
                 
+                ctx.commit('changePageNumber', 1)
                 ctx.commit('updateRecipes', recipes)
             } catch (e) {
                 console.log(e)
@@ -88,7 +90,17 @@ export default {
     },
     mutations: {
         updateRecipes(state, recipes) {
-            state.recipes = recipes
+            const pages = []
+            const amountOnPage = state.recipesOnPage || 10
+            
+            for (let recipeIdx = 0; recipeIdx < recipes.length; recipeIdx = recipeIdx + amountOnPage) {
+                pages.push(recipes.slice(recipeIdx, recipeIdx + amountOnPage))
+            }
+            
+            state.recipes = pages
+        },
+        changePageNumber(state, number) {
+            state.pageNumber = number
         },
         setRecipe(state, recipe) {
             state.recipe = recipe
@@ -102,6 +114,8 @@ export default {
     },
     state: {
         recipes: [],
+        recipesOnPage: 10,
+        pageNumber: 1,
         recipe: null,
         message: null,
         loading: false
@@ -109,6 +123,9 @@ export default {
     getters: {
         allRecipes(state) {
             return state.recipes
+        },
+        pageNumber(state) {
+            return state.pageNumber
         },
         recipe(state) {
             return state.recipe
