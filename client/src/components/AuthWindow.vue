@@ -2,10 +2,9 @@
     <div class="wrapper">
         <Backdrop />
         <div class="window">
-            <!-- <i
-                class="material-icons md-24"
-                @click="closeWindow"
-            >clear</i> -->
+            <router-link to="/" replace>	
+                <i class="material-icons md-24">clear</i>
+            </router-link>
             <p>Authorize and save recipes!</p>
             <form @submit.prevent="submitForm('login')">
                 <div class="auth-input">
@@ -53,7 +52,7 @@
 
 <script>
 import Backdrop from '../ui/Backdrop'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -68,6 +67,7 @@ export default {
             passwordValid: false
         }
     },
+    computed: mapGetters(['token']),
     components: {
         Backdrop
     },

@@ -4,14 +4,17 @@
             <h2>What's For Dinner
                 <i class="material-icons">help_outline</i>
             </h2>
-            <router-link to='profile'>
+            <router-link 
+                :to="isAuthenticated ? 'profile' : '/?auth=true'" 
+                :replace="isAuthenticated ? false : true"
+            >
                 <div>Profile</div>
             </router-link>
         </header>
         <main>
             <RecipeWindow v-if="recipeWindow" />
-            <FilterWindow v-if="filterWindow"/>
-            <AuthWindow v-if="authWindow" />
+            <FilterWindow v-if="filterWindow" />
+            <AuthWindow v-if="$route.query.auth" />
             <Search />
             <div class="recipes-wrapper" v-if="allRecipes.length">
                 <Pagination :amountOfPages="allRecipes.length" />
@@ -33,7 +36,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Search from '../components/Search'
 import RecipeCard from '../components/RecipeCard'
 import Pagination from '../components/Pagination'
@@ -59,11 +62,14 @@ export default {
         'loading', 
         'recipeWindow', 
         'filterWindow',
-        'authWindow'
+        'authWindow',
+        'isAuthenticated'
     ]),
     methods: {
         ...mapActions(['fetchOneRecipe']),
+        ...mapMutations(['showAuthWindow']),
         openRecipeWindow(id) {
+            console.log(this.queryParams)
             this.fetchOneRecipe(id)
         }
     }

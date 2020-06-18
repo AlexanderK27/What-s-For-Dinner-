@@ -16,7 +16,7 @@ export default {
     state: {
         filterWindow: false,
         recipeWindow: false,
-        authWindow: true
+        authWindow: false
     },
     getters: {
         filterWindow(state) {

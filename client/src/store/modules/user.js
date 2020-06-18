@@ -1,3 +1,5 @@
+import router from '../../router';
+
 const hostname = window.location.hostname === 'localhost' ? 'localhost:8080' : window.location.hostname
 export default {
     actions: {
@@ -21,6 +23,7 @@ export default {
                 ctx.commit('setUser', data.user)
                 ctx.commit('setToken', data.token)
                 ctx.commit('setTokenExpireTime', data.tokenExpires)
+                router.push('/profile');
             } catch (e) {
                 console.log(e)
             }
@@ -47,6 +50,7 @@ export default {
                 ctx.commit('setUser', data.user)
                 ctx.commit('setToken', data.token)
                 ctx.commit('setTokenExpireTime', data.tokenExpires)
+                router.push('/profile');
             } catch (e) {
                 console.log(e)
             }
@@ -59,16 +63,30 @@ export default {
             state.user = user
         },
         setToken(state, token) {
+            if (token) {
+                window.localStorage.setItem('token', token)
+            } else {
+                window.localStorage.removeItem('token')
+            }
             state.token = token
         },
         setTokenExpireTime(state, time) {
+            if (time) {
+                window.localStorage.setItem('expiresIn', time)
+            } else {
+                window.localStorage.removeItem('expiresIn')
+            }
             state.tokenExpires = time
+        },
+        setIsAuthenticated(state, isAuthed) {
+            state.isAuthenticated = isAuthed
         }
     },
     state: {
         user: null,
         token: '',
-        tokenExpires: null
+        tokenExpires: null,
+        isAuthenticated: false
     },
     getters: {
         user(state) {
@@ -79,6 +97,9 @@ export default {
         },
         tokenExpires(state) {
             return state.tokenExpires
+        },
+        isAuthenticated(state) {
+            return state.isAuthenticated
         }
     }
 }
