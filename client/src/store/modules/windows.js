@@ -9,10 +9,14 @@ export default {
         showRecipeWindow(state, show) {
             state.recipeWindow = show
         },
+        showAuthWindow(state, show) {
+            state.authWindow = show
+        }
     },
     state: {
         filterWindow: false,
         recipeWindow: false,
+        authWindow: true
     },
     getters: {
         filterWindow(state) {
@@ -21,5 +25,8 @@ export default {
         recipeWindow(state) {
             return state.recipeWindow
         },
+        authWindow(state) {
+            return state.authWindow
+        }
     }
 }

@@ -76,11 +76,6 @@ import Backdrop from '../ui/Backdrop'
 import Loader from '../ui/Loader'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
-    data() {
-        return {
-            parser: new DOMParser()
-        }  
-    },
     computed: mapGetters(['recipe']),
     components: {
         Backdrop,

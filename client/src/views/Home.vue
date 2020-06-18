@@ -11,6 +11,7 @@
         <main>
             <RecipeWindow v-if="recipeWindow" />
             <FilterWindow v-if="filterWindow"/>
+            <AuthWindow v-if="authWindow" />
             <Search />
             <div class="recipes-wrapper" v-if="allRecipes.length">
                 <Pagination :amountOfPages="allRecipes.length" />
@@ -38,20 +39,17 @@ import RecipeCard from '../components/RecipeCard'
 import Pagination from '../components/Pagination'
 import RecipeWindow from '../components/RecipeWindow'
 import FilterWindow from '../components/FilterWindow'
+import AuthWindow from '../components/AuthWindow'
 import Loader from '../ui/Loader'
 export default {
     name: 'Home',
-    data() {
-        return {
-            // recipes: 
-        }
-    },
     components: {
         Search,
         RecipeCard,
         Pagination,
         RecipeWindow,
         FilterWindow,
+        AuthWindow,
         Loader
     },
     computed: mapGetters([
@@ -60,7 +58,8 @@ export default {
         'message', 
         'loading', 
         'recipeWindow', 
-        'filterWindow'
+        'filterWindow',
+        'authWindow'
     ]),
     methods: {
         ...mapActions(['fetchOneRecipe']),
