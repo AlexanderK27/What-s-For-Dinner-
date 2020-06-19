@@ -6,6 +6,7 @@ const app = express()
 app.use(express.json())
 app.use('/api/recipes', require('./routes/spoonacular'))
 app.use('/api/auth', require('./routes/auth'))
+app.use('/api/user', require('./routes/user'))
 
 // app.use(express.static(path.resolve(__dirname, 'client')))
 

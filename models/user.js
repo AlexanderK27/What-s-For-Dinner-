@@ -15,11 +15,11 @@ const userSchema = new Schema({
     }
 })
 
-// userSchema.virtual('usertickets', {
-//     ref: 'Ticket',
-//     localField: '_id',
-//     foreignField: 'owner'
-// })
+userSchema.virtual('recipes', {
+    ref: 'Recipe',
+    localField: '_id',
+    foreignField: 'owner'
+})
 
 userSchema.methods.toJSON = function() {
     const user = this

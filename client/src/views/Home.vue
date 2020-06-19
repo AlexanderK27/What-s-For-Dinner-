@@ -67,10 +67,10 @@ export default {
     ]),
     methods: {
         ...mapActions(['fetchOneRecipe']),
-        ...mapMutations(['showAuthWindow']),
+        ...mapMutations(['showAuthWindow', 'showRecipeWindow']),
         openRecipeWindow(id) {
-            console.log(this.queryParams)
             this.fetchOneRecipe(id)
+            this.showRecipeWindow(true)
         }
     }
 }

@@ -80,13 +80,21 @@ export default {
         },
         setIsAuthenticated(state, isAuthed) {
             state.isAuthenticated = isAuthed
+        },
+        setSavedRecipes(state, recipes) {
+            state.savedRecipes = recipes
+        },
+        setSavedRecipesIds(state, recipesIds) {
+            state.savedRecipesIds = recipesIds
         }
     },
     state: {
         user: null,
-        token: '',
-        tokenExpires: null,
-        isAuthenticated: false
+        token: window.localStorage.getItem('token'),
+        tokenExpires: window.localStorage.getItem('expiresIn'),
+        isAuthenticated: false,
+        savedRecipes: [],
+        savedRecipesIds: []
     },
     getters: {
         user(state) {
@@ -100,6 +108,12 @@ export default {
         },
         isAuthenticated(state) {
             return state.isAuthenticated
+        },
+        savedRecipes(state) {
+            return state.savedRecipes
+        },
+        savedRecipesIds(state) {
+            return state.savedRecipesIds
         }
     }
 }

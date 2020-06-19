@@ -6,7 +6,14 @@
         />
         <div>
             <div class="categories">
-                <i class="material-icons md-18">star_outline</i>
+                <i  v-if="savedRecipesIds.includes(recipe.id)"
+                    class="material-icons md-18"
+                    @click.stop="deleteRecipe(recipe.id)"
+                >star</i>
+                <i  v-else
+                    class="material-icons md-18"
+                    @click.stop="saveRecipe(recipe.id)"
+                >star_outline</i>
             </div>
             <p class="title">{{recipe.title}}</p>
             <div class="info-wrapper" v-if="recipe.readyInMinutes">
@@ -34,13 +41,16 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
     props: {
         recipe: {
             type: Object,
             required: true
         }
-    }
+    },
+    computed: mapGetters(['savedRecipesIds']),
+    methods: mapActions(['saveRecipe', 'deleteRecipe'])
 }
 </script>
 
