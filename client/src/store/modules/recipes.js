@@ -178,6 +178,29 @@ export default {
                 ctx.commit('setSavedRecipesIds', savedRecipesIds.concat([recipeId]))
                 console.log(e, e.message)
             }
+        },
+        async fetchSavedRecipes(ctx) {
+            ctx.commit('setLoading', true)
+            try {
+                const response = await fetch(`${window.location.protocol}//${hostname}/api/user/me/recipes`, {
+                    method: 'GET',
+                    body: null,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${ctx.getters.token}`
+                    }
+                })
+                const resipes = await response.json()
+
+                if (!response.ok) {
+                    throw new Error(response)
+                }
+                console.log(resipes)
+                ctx.commit('setSavedRecipes', resipes)
+            } catch (e) {
+                console.log(e)
+            }
+            ctx.commit('setLoading', false)
         }
     },
     mutations: {

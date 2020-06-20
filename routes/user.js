@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const Recipe = require('../models/recipe')
+const User = require('../models/user')
 const auth = require('../middleware/auth')
-const { Error } = require('mongoose')
 
 const router = Router()
 
@@ -19,7 +19,6 @@ router.post('/recipe', auth, async (req, res) => {
 router.delete('/recipe', auth, async (req, res) => {
     try {
         const response = await Recipe.deleteMany({ id: req.body.id, owner: req.userId })
-        console.log(response)
         
         if (response.ok !== 1) {
             throw new Error({ status: 500, message: 'DB error, try again later' })
@@ -32,6 +31,49 @@ router.delete('/recipe', auth, async (req, res) => {
         } else {
             res.status(400).json({ message: e.message })
         }
+    }
+})
+
+router.get('/me/recipes', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId)
+        await user.populate({
+            path: 'recipes',
+            options: { 
+                sort: { createdAt: -1 } 
+            }
+        }).execPopulate()
+
+        if (!user.recipes) {
+            return res.status(200).json({ message: 'You have not saved any recipes yet' })
+        }
+
+        res.send(user.recipes)
+    } catch (e) {
+        res.status(500).json({ error: 'Something went wrong on server side' })
+    }
+})
+
+router.get('/me', auth, async(req, res) => {
+    try {
+        const user = await User.findById(req.userId)
+        res.send(user)
+    } catch (e) {
+        res.status(500).json({ error: 'Something went wrong on server side' })
+    }
+})
+
+router.delete('/me', auth, async (req, res) => {
+    try {
+        const response = await User.deleteOne({ _id: req.userId })
+
+        if (response.ok !== 1) {
+            throw new Error({ status: 500, message: 'DB error, try again later' })
+        }
+
+        res.status(200).json({ message: 'Deleted' })
+    } catch (e) {
+        res.status(500).json({ error: 'Something went wrong on server side' })
     }
 })
 

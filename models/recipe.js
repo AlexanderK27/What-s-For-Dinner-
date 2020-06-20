@@ -17,6 +17,8 @@ const recipeSchema = new Schema({
         required: true,
         ref: 'User'
     }
+}, {
+    timestamps: true
 })
 
 const Recipe = model('Recipe', recipeSchema)
