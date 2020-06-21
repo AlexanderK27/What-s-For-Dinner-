@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <Backdrop />
+        <AppBackdrop />
         <div class="window">
             <div class="filters">
                 <p>Cuisines</p>
@@ -52,14 +52,14 @@
 
 <script>
 import { mapMutations, mapGetters } from 'vuex'
-import Backdrop from '../ui/Backdrop'
+import AppBackdrop from '../ui/AppBackdrop'
 export default {
     data() {
         return {}
     },
     computed: mapGetters(['stdFilters']),
     components: {
-        Backdrop
+        AppBackdrop
     },
     methods: {
         ...mapMutations(['showFilterWindow', 'setSelectedFilters']),

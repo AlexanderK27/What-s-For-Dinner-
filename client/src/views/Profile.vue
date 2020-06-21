@@ -8,23 +8,25 @@
         <div class="round-button user">
             <i class="material-icons">person</i>
             <div class="settings">
-                <p>Username</p>
+                <p>{{user}}</p>
                 <hr>
                 <p>Change password</p>
                 <p>Delete account</p>
                 <hr>
-                <p>Log out</p>
+                <p @click="logout">
+                    Log out
+                    <i class="material-icons exit">login</i>
+                </p>
             </div>
         </div>
         <div class="recipes">
             <div class="noop" v-if="!recipe"></div>
             <DetailedRecipe v-else :recipe="recipe" />
-            <!-- <pre>
-                {{recipe}}
-            </pre> -->
         </div>
         <div class="pictures">
-            <Loader v-if="loading" />
+            <div class="loader" v-if="loading">
+                <AppLoader />
+            </div>
             <ProfileRecipeCard
                 v-else-if="savedRecipes.length" 
                 v-for="(recipe, idx) in savedRecipes"
@@ -41,24 +43,24 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ProfileRecipeCard from '../components/ProfileRecipeCard'
 import DetailedRecipe from '../components/DetailedRecipe'
-import Loader from '../ui/Loader'
+import ProfileRecipeCard from '../components/cards/ProfileRecipeCard'
+import AppLoader from '../components/ui/AppLoader'
 export default {
     name: 'Profile',
     components: {
         ProfileRecipeCard,
         DetailedRecipe,
-        Loader
+        AppLoader
     },
     data() {
         return {
             recipe: null
         }
     },
-    computed: mapGetters(['loading', 'savedRecipes']),
+    computed: mapGetters(['loading', 'savedRecipes', 'user']),
     methods: {
-        ...mapActions(['fetchSavedRecipes']),
+        ...mapActions(['fetchSavedRecipes', 'logout']),
         openRecipeDetails(recipe) {
             this.recipe = recipe
         }
@@ -105,7 +107,7 @@ export default {
 
         &.user {
             left: 80px;
-            transition: 1s;
+            transition: 0.7s;
             overflow: hidden;
 
             .material-icons {
@@ -118,14 +120,13 @@ export default {
                 top: 0;
                 left: 0;
                 width: 180px;
-                height: 220px;
                 padding: 10px;
                 overflow: hidden;
             }
             
             &:hover {
                 width: 180px;
-                height: 220px;
+                height: 200px;
                 border-radius: 26px;
 
                 .material-icons {
@@ -133,6 +134,33 @@ export default {
                 }
                 .settings {
                     display: block;
+                }
+            }
+
+            p {
+                &:nth-of-type(2) {
+                    &:hover { color: #D8DD00 }
+                }
+
+                &:nth-of-type(3) {
+                    &:hover { color: #CD0000 }
+                }
+
+                &:nth-of-type(4) {
+                    display: flex;
+                    justify-content: center;
+                    transition: 0.1s;
+
+                    &:hover {
+                        text-decoration: underline;
+                        .exit { display: inline-block; }
+                    }
+                }
+
+                .exit { 
+                    display: none;
+                    margin: -3px 0 0 7px;
+                    font-size: 22px;
                 }
             }
         }
@@ -165,9 +193,22 @@ export default {
     .pictures {
         box-sizing: border-box;
         height: 100vh;
+        min-width: 320px;
         padding: 0px 4px;
         background-color: #000000;
         overflow: auto;
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+
+            >div {
+                margin-top: 0px;
+            }
+        }
     }
 }
 </style>

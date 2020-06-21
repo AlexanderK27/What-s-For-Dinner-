@@ -8,7 +8,7 @@
                 :to="isAuthenticated ? 'profile' : '/?auth=true'" 
                 :replace="isAuthenticated ? false : true"
             >
-                <div>Profile</div>
+                <div>{{isAuthenticated ? user : 'Profile'}}</div>
             </router-link>
         </header>
         <main>
@@ -29,7 +29,7 @@
                 <Pagination :amountOfPages="allRecipes.length" />
             </div>
             <div v-else-if="message"><p>{{message}}</p></div>
-            <div v-else-if="loading"><Loader /></div>
+            <div v-else-if="loading"><AppLoader /></div>
             <div v-else></div>
         </main>
     </div>
@@ -38,12 +38,12 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Search from '../components/Search'
-import RecipeCard from '../components/RecipeCard'
 import Pagination from '../components/Pagination'
-import RecipeWindow from '../components/RecipeWindow'
-import FilterWindow from '../components/FilterWindow'
-import AuthWindow from '../components/AuthWindow'
-import Loader from '../ui/Loader'
+import RecipeCard from '../components/cards/RecipeCard'
+import RecipeWindow from '../components/modals/RecipeWindow'
+import FilterWindow from '../components/modals/FilterWindow'
+import AuthWindow from '../components/modals/AuthWindow'
+import AppLoader from '../components/ui/AppLoader'
 export default {
     name: 'Home',
     components: {
@@ -53,7 +53,7 @@ export default {
         RecipeWindow,
         FilterWindow,
         AuthWindow,
-        Loader
+        AppLoader
     },
     computed: mapGetters([
         'allRecipes', 
@@ -63,7 +63,8 @@ export default {
         'recipeWindow', 
         'filterWindow',
         'authWindow',
-        'isAuthenticated'
+        'isAuthenticated',
+        'user'
     ]),
     methods: {
         ...mapActions(['fetchOneRecipe']),

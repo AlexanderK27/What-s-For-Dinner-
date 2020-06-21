@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <Backdrop />
+        <AppBackdrop />
         <div class="window">
             <i
                 class="material-icons md-48"
@@ -65,21 +65,21 @@
                 </div>
             </div>
             <div v-else class="loader">
-                <Loader />
+                <AppLoader />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import Backdrop from '../ui/Backdrop'
-import Loader from '../ui/Loader'
+import AppBackdrop from '../ui/AppBackdrop'
+import AppLoader from '../ui/AppLoader'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
     computed: mapGetters(['recipe']),
     components: {
-        Backdrop,
-        Loader
+        AppBackdrop,
+        AppLoader
     },
     methods: {
         ...mapMutations(['setRecipe', 'showRecipeWindow']),

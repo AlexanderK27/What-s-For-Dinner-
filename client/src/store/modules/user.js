@@ -47,7 +47,7 @@ export default {
                     )
                 }
                 
-                ctx.commit('setUser', data.user)
+                ctx.commit('setUser', data.user.username)
                 ctx.commit('setToken', data.token)
                 ctx.commit('setTokenExpireTime', data.tokenExpires)
                 router.push('/profile');
@@ -56,10 +56,21 @@ export default {
             }
 
             // ctx.commit('setLoading', false)
+        },
+        async logout(ctx) {
+            ctx.commit('setIsAuthenticated', false)
+            window.localStorage.removeItem('token')
+            window.localStorage.removeItem('expiresIn')
+            router.push('/')
         }
     },
     mutations: {
         setUser(state, user) {
+            if (user) {
+                window.localStorage.setItem('username', user)
+            } else {
+                window.localStorage.removeItem('username')
+            }
             state.user = user
         },
         setToken(state, token) {
@@ -89,7 +100,7 @@ export default {
         }
     },
     state: {
-        user: null,
+        user: window.localStorage.getItem('username'),
         token: window.localStorage.getItem('token'),
         tokenExpires: window.localStorage.getItem('expiresIn'),
         isAuthenticated: false,

@@ -1,39 +1,31 @@
 <template>
     <div class="wrapper">
-        <Backdrop />
+        <AppBackdrop />
         <div class="window">
             <router-link to="/" replace>	
                 <i class="material-icons md-24">clear</i>
             </router-link>
             <p>Authorize and save recipes!</p>
             <form @submit.prevent="submitForm('login')">
-                <div class="auth-input">
-                    <label for="username">Your username</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        placeholder="John or Master Cheff 42"
-                        v-model="username"
-                        @input="onUsernameInputChange"
-                        @blur="onUsernameInputChange"
-                    />
-                    <small v-if="usernameWarning">{{usernameWarning}}</small>
-                </div>
-                <div class="auth-input">
-                    <label for="password">Password</label>
-                    <input 
-                        :type="showPassword ? 'text' : 'password'" 
-                        id="password"
-                        placeholder="Six or more symbols long"
-                        v-model="password"
-                        @input="onPasswordInputChange"
-                        @blur="onPasswordInputChange"
-                    />
-                    <i class="material-icons md-18" @click="showAndHidePassword">
-                        {{showPassword ? 'visibility_off' : 'visibility'}}
-                    </i>
-                    <small v-if="passwordWarning">{{passwordWarning}}</small>
-                </div>
+                <AppInput 
+                    :name="'username'"
+                    :label="'Your username'"
+                    :type="'text'"
+                    :placeholder="'John or Master Cheff 42'"
+                    :value="username"
+                    :warning="usernameWarning"
+                    @input-change="onUsernameInputChange"
+                />
+                <AppInput 
+                    :name="'password'"
+                    :label="'Password'"
+                    :type="'password'"
+                    :placeholder="'Six or more symbols long'"
+                    :value="password"
+                    :warning="passwordWarning"
+                    :showPasswordIcon="true"
+                    @input-change="onPasswordInputChange"
+                />
                 <div class="buttons">
                     <button 
                         type="button" 
@@ -51,7 +43,8 @@
 </template>
 
 <script>
-import Backdrop from '../ui/Backdrop'
+import AppInput from '../ui/AppInput'
+import AppBackdrop from '../ui/AppBackdrop'
 import { mapActions, mapGetters } from 'vuex'
 export default {
     data() {
@@ -69,14 +62,13 @@ export default {
     },
     computed: mapGetters(['token']),
     components: {
-        Backdrop
+        AppInput,
+        AppBackdrop
     },
     methods: {
         ...mapActions(['registrateNewUser', 'login']),
-        showAndHidePassword() {
-            this.showPassword = !this.showPassword
-        },
-        onUsernameInputChange() {
+        onUsernameInputChange(value) {
+            this.username = value
             this.usernameValid = false
             if (!this.usernameTouched && this.username) {
                 this.usernameTouched = true
@@ -93,7 +85,8 @@ export default {
                 }
             }
         },
-        onPasswordInputChange() {
+        onPasswordInputChange(value) {
+            this.password = value
             this.passwordValid = false
             if (!this.passwordTouched && this.password) {
                 this.passwordTouched = true
@@ -158,11 +151,6 @@ export default {
         padding: 30px 16px;
         background-color: linen;
         z-index: 3000;
-
-        .auth-input {
-            display: flex;
-            flex-direction: column;
-        }
     }
 }
 </style>
