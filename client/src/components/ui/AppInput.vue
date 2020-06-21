@@ -3,23 +3,27 @@
         <label :for="name">
             {{label}}
         </label>
-        <input 
-            :type="inputType" 
-            :id="name" 
-            :placeholder="placeholder" 
-            :class="warning ? 'warning' : 'ok'"
-            v-model="inputValue"
-            @input="$emit('input-change', inputValue)"
-            @blur="$emit('input-change', inputValue)"
-        />
-        <small v-if="warning">
-            {{warning}}
-        </small>
-        <div v-if="showPasswordIcon" class="icon" @click="onShowPassword">
-            <i class="material-icons">
+        <div class="input-area">
+            <input 
+                :type="inputType" 
+                :id="name" 
+                :placeholder="placeholder" 
+                :class="warning ? 'warning' : 'ok'"
+                v-model="inputValue"
+                @input="$emit('input-change', inputValue)"
+                @blur="$emit('input-change', inputValue)"
+            />
+            <i 
+                v-if="showPasswordIcon" 
+                :class="warning ? 'material-icons warning' : 'material-icons ok'"
+                @click="onShowPassword" 
+            >
                 {{show ? 'visibility_off' : 'visibility'}}
             </i>
         </div>
+        <small v-if="warning">
+            {{warning}}
+        </small>
     </div>
 </template>
 
@@ -53,16 +57,39 @@ export default {
 <style lang="less" scoped>
 .input-field {
 
-    input {
-        width: 100%;
-        padding: 8px 14px;
+    .input-area {
+        position: relative;
 
-        &.ok {
-            border-color: #AAAAAA;
+        input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 10px 46px 10px 16px;
+            font-family: Avenir, Helvetica, Arial, sans-serif;
+            border-style: solid;
+            border-radius: 8px;
+            outline-color: #000000;
+
+            &.ok {
+                border-color: #BBBBBB;
+            }
+
+            &.warning {
+                border-color: #CD0000;
+            }
         }
 
-        &.warning {
-            border-color: #CD0000;
+        i {
+            position: absolute;
+            top: 7px;
+            right: 13px;
+
+            &.ok {
+                color: #2C3E50;
+            }
+
+            &.warning {
+                color: #CD0000;
+            }
         }
     }
 
