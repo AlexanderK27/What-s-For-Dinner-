@@ -1,5 +1,7 @@
 <template>
-    <div class="wrapper">
+    <div class="page-wrapper">
+        <ChangePassWindow v-if="changePassWindow"/>
+        <DeleteAccWindow v-if="deleteAccWindow"/>
         <router-link to='/'>
             <div class="round-button back">
                 <i class="material-icons">arrow_back</i>
@@ -10,8 +12,8 @@
             <div class="settings">
                 <p>{{user}}</p>
                 <hr>
-                <p>Change password</p>
-                <p>Delete account</p>
+                <p @click="showChangePassWindow(true)">Change password</p>
+                <p @click="showDeleteAccWindow(true)">Delete account</p>
                 <hr>
                 <p @click="logout">
                     Log out
@@ -24,16 +26,17 @@
             <DetailedRecipe v-else :recipe="recipe" />
         </div>
         <div class="pictures">
-            <div class="loader" v-if="loading">
+            <div v-if="savedRecipes.length" >
+                <ProfileRecipeCard
+                    v-for="(recipe, idx) in savedRecipes"
+                    :key="recipe.title + idx"
+                    :recipe="recipe"
+                    @select-recipe="openRecipeDetails"
+                />
+            </div>
+            <div class="loader" v-else-if="loading">
                 <AppLoader />
             </div>
-            <ProfileRecipeCard
-                v-else-if="savedRecipes.length" 
-                v-for="(recipe, idx) in savedRecipes"
-                :key="recipe.title + idx"
-                :recipe="recipe"
-                @select-recipe="openRecipeDetails"
-            />
             <div v-else>
                 <p>No saved recipes yet</p>
             </div>
@@ -42,14 +45,18 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import DetailedRecipe from '../components/DetailedRecipe'
 import ProfileRecipeCard from '../components/cards/ProfileRecipeCard'
+import DeleteAccWindow from '../components/modals/DeleteAccWindow'
+import ChangePassWindow from '../components/modals/ChangePassWindow'
 import AppLoader from '../components/ui/AppLoader'
 export default {
     name: 'Profile',
     components: {
         ProfileRecipeCard,
+        DeleteAccWindow,
+        ChangePassWindow,
         DetailedRecipe,
         AppLoader
     },
@@ -58,9 +65,10 @@ export default {
             recipe: null
         }
     },
-    computed: mapGetters(['loading', 'savedRecipes', 'user']),
+    computed: mapGetters(['loading', 'savedRecipes', 'user', 'deleteAccWindow', 'changePassWindow']),
     methods: {
         ...mapActions(['fetchSavedRecipes', 'logout']),
+        ...mapMutations(['showDeleteAccWindow', 'showChangePassWindow']),
         openRecipeDetails(recipe) {
             this.recipe = recipe
         }
@@ -75,10 +83,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.wrapper {
+.page-wrapper {
     display: flex;
     min-height: 100vh;
-    background-color: #F1FCEA;
+    background-color: #F0FDEB;
 
     .round-button {
         position: fixed;
@@ -182,7 +190,6 @@ export default {
             width: 100%;
             max-width: 420px;
             height: 420px;
-            opacity: 0.5;
             background-image: url('../assets/profile-page.jpg');
             background-repeat: no-repeat;
             background-position: center;
