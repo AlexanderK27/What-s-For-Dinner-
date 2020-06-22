@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose')
 const jwt = require('jsonwebtoken')
+const Recipe = require('./recipe')
 
 const userSchema = new Schema({
     username: { 
@@ -19,6 +20,12 @@ userSchema.virtual('recipes', {
     ref: 'Recipe',
     localField: '_id',
     foreignField: 'owner'
+})
+
+userSchema.pre('remove', async function(next) {
+    const user = this
+    await Recipe.deleteMany({ owner: user._id })
+    next()
 })
 
 userSchema.methods.toJSON = function() {

@@ -20,7 +20,7 @@ export default {
                     )
                 }
                 
-                ctx.commit('setUser', data.user)
+                ctx.commit('setUser', data.user.username)
                 ctx.commit('setToken', data.token)
                 ctx.commit('setTokenExpireTime', data.tokenExpires)
                 router.push('/profile');
@@ -61,7 +61,66 @@ export default {
             ctx.commit('setIsAuthenticated', false)
             window.localStorage.removeItem('token')
             window.localStorage.removeItem('expiresIn')
+            window.localStorage.removeItem('username')
             router.push('/')
+        },
+        async deleteAccount(ctx, password) {
+            try {
+                const response = await fetch(`${window.location.protocol}//${hostname}/api/user/me`, {
+                    method: 'DELETE',
+                    body: JSON.stringify({ password }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${ctx.getters.token}`
+                    }
+                })
+                const message = await response.json()               
+
+                if (!response.ok) {
+                    throw new Error(message.message)
+                }
+
+                ctx.commit('setAlert', {
+                    type: 'success',
+                    message: message.message
+                })
+
+                ctx.commit('showDeleteAccWindow', false)
+                await ctx.dispatch('logout')
+            } catch (e) {
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
+            }
+        },
+        async updatePassword(ctx, passwords) {
+            try {
+                const response = await fetch(`${window.location.protocol}//${hostname}/api/user/me`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ ...passwords }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${ctx.getters.token}`
+                    }
+                })
+                const message = await response.json()               
+
+                if (!response.ok) {
+                    throw new Error(message.message)
+                }
+
+                ctx.commit('setAlert', {
+                    type: 'success',
+                    message: message.message
+                })
+                ctx.commit('showChangePassWindow', false)
+            } catch (e) {
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
+            }
         }
     },
     mutations: {
