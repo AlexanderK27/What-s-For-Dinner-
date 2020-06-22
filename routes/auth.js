@@ -29,6 +29,7 @@ router.post('/registrate',
 
             const hashedPassword = await bcrypt.hash(password, 8)
             const user = new User({ username, password: hashedPassword })
+
             await user.save()
 
             const token = await user.generateAuthToken()

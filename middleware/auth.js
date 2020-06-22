@@ -13,7 +13,6 @@ module.exports = (req, res, next) => {
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(decoded)
         req.userId = decoded._id
 
         next()
