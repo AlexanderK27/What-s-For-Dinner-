@@ -1,6 +1,6 @@
 <template>
     <div class="input-field">
-        <label :for="name">
+        <label v-if="label" :for="name">
             {{label}}
         </label>
         <div class="input-area">
@@ -45,6 +45,9 @@ export default {
             inputValue: this.value
         }
     },
+    watch: {
+        value: function() { this.inputValue = this.value }
+    },
     methods: {
         onShowPassword() {
             this.inputType === 'text' ? this.inputType = 'password' : this.inputType = 'text'
@@ -56,6 +59,17 @@ export default {
 
 <style lang="less" scoped>
 .input-field {
+    width: 100%;
+    text-align: left;
+
+    label, small {
+        margin-left: 6px;
+    }
+
+    label {
+        font-size: 14px;
+        font-weight: bold;
+    }
 
     .input-area {
         position: relative;
@@ -75,6 +89,7 @@ export default {
 
             &.warning {
                 border-color: #CD0000;
+                outline: none;
             }
         }
 
@@ -82,6 +97,7 @@ export default {
             position: absolute;
             top: 7px;
             right: 13px;
+            cursor: pointer;
 
             &.ok {
                 color: #2C3E50;
