@@ -28,7 +28,6 @@
                 </div>
                 <Pagination :amountOfPages="allRecipes.length" />
             </div>
-            <div v-else-if="message"><p>{{message}}</p></div>
             <div v-else-if="loading"><AppLoader /></div>
             <div v-else></div>
         </main>
@@ -58,7 +57,6 @@ export default {
     computed: mapGetters([
         'allRecipes', 
         'pageNumber', 
-        'message', 
         'loading', 
         'recipeWindow', 
         'filterWindow',

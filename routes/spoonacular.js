@@ -40,7 +40,7 @@ router.get('/search', async (req, res) => {
 
         res.status(200).json(recipes)
     } catch (e) {
-        console.log(e)
+        res.status(500).json({ message: 'Something went wrong, please, try again later' })
     }
 })
 
@@ -59,7 +59,7 @@ router.get('/searchByIngredients', async (req, res) => {
 
         res.status(200).json(recipes)
     } catch (e) {
-        console.log(e)
+        res.status(500).json({ message: 'Something went wrong, please, try again later' })
     }
 })
 
@@ -75,7 +75,7 @@ router.get('/:id', async (req, res) => {
 
         res.status(200).json(recipe)
     } catch (e) {
-        console.log(e)
+        res.status(500).json({ message: 'Something went wrong, please, try again later' })
     }
 })
 

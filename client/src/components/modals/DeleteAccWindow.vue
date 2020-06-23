@@ -7,6 +7,7 @@
                 <small>This action is final and you will be unable to recover any data</small>
                 <div v-if="agree" class="confirm">
                     <AppInput 
+                        type="password"
                         name="password"
                         placeholder="Enter your password to continue"
                         :value="password"

@@ -35,7 +35,7 @@ export default {
         color: #0F0F0F;
         font-size: 16px;
         font-weight: bold;
-        animation: exit 0.5s 10s both;
+        animation: exit 0.5s 3s both;
 
         &.neutral {
             background-color: #94A1AC;
@@ -62,7 +62,7 @@ export default {
             bottom: 0;
             right: 0;
             height: 8px;
-            animation: timer 10s linear;
+            animation: timer 3s linear;
             animation-iteration-count: 1;
         }
 

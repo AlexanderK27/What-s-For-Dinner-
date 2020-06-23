@@ -7,7 +7,7 @@
                 <small>Use uppercase letters and special characters to strengthen the password</small>
                 <div class="inputs">
                     <AppInput 
-                        inputType="password"
+                        type="password"
                         name="oldPassword"
                         placeholder="Your old password"
                         :value="oldPassword"
@@ -17,7 +17,7 @@
                     />
                     <br>
                     <AppInput 
-                        inputType="password"
+                        type="password"
                         name="newPassword"
                         placeholder="Your new password"
                         :value="newPassword"

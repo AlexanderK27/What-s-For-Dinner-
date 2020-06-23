@@ -5,10 +5,6 @@ export default {
     actions: {
         async fetchRecipes(ctx, text) {
             ctx.commit('setLoading', true)
-
-            if (ctx.state.message) {
-                ctx.commit('setMessage', null)
-            } 
             
             if (ctx.state.recipes.length) {
                 ctx.commit('updateRecipes', [])
@@ -22,29 +18,35 @@ export default {
 
             try {
                 const response = await fetch(`${window.location.protocol}//${hostname}/api/recipes/search?title=${text}&filters=${filters}`)
-                const recipes = await response.json()
+                const data = await response.json()
 
-                if (recipes.message) {
-                    return (
-                        ctx.commit('setMessage', recipes.message),
-                        ctx.commit('setLoading', false)
-                    )
+                if (!response.ok) {
+                    if (response.status >= 500) {
+                        throw new Error(data.message)
+                    } else {
+                        return (
+                            ctx.commit('setAlert', {
+                                type: 'neutral',
+                                message: data.message
+                            }),
+                            ctx.commit('setLoading', false)
+                        )
+                    }
                 }
                 
                 ctx.commit('changePageNumber', 1)
-                ctx.commit('updateRecipes', recipes.results)
+                ctx.commit('updateRecipes', data.results)
             } catch (e) {
-                console.log(e)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
 
             ctx.commit('setLoading', false)
         },
         async fetchRecipesByIngredients(ctx, ingredients) {
             ctx.commit('setLoading', true)
-
-            if (ctx.state.message) {
-                ctx.commit('setMessage', null)
-            } 
             
             if (ctx.state.recipes.length) {
                 ctx.commit('updateRecipes', [])
@@ -54,20 +56,29 @@ export default {
 
             try {
                 const response = await fetch(`${window.location.protocol}//${hostname}/api/recipes/searchByIngredients?ing=${usersIngredients}`)
-                const recipes = await response.json()
-                console.log(recipes)
+                const data = await response.json()
 
-                if (recipes.message) {
-                    return (
-                        ctx.commit('setMessage', recipes.message),
-                        ctx.commit('setLoading', false)
-                    )
+                if (!response.ok) {
+                    if (response.status >= 500) {
+                        throw new Error(data.message)
+                    } else {
+                        return (
+                            ctx.commit('setAlert', {
+                                type: 'neutral',
+                                message: data.message
+                            }),
+                            ctx.commit('setLoading', false)
+                        )
+                    }
                 }
                 
                 ctx.commit('changePageNumber', 1)
-                ctx.commit('updateRecipes', recipes)
+                ctx.commit('updateRecipes', data)
             } catch (e) {
-                console.log(e)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
 
             ctx.commit('setLoading', false)
@@ -77,27 +88,39 @@ export default {
 
             try {
                 const response = await fetch(`${window.location.protocol}//${hostname}/api/recipes/${recipeId}`)
-                const recipe = await response.json()
+                const data = await response.json()
                 
-                if (!response.ok || recipe.message) {
-                    ctx.commit('setMessage', recipe.message),
-                    ctx.commit('setLoading', false)
-                    throw new Error(recipe.message || 'Something went wrong')
+                if (!response.ok) {
+                    if (response.status >= 500) {
+                        throw new Error(data.message)
+                    } else {
+                        return (
+                            ctx.commit('setAlert', {
+                                type: 'neutral',
+                                message: data.message
+                            }),
+                            ctx.commit('setLoading', false)
+                        )
+                    }
                 }
 
-                ctx.commit('setRecipe', recipe)
+                ctx.commit('setRecipe', data)
             } catch (e) {
-                console.log(e)
-                // ctx.commit('setError', e.error)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
 
             ctx.commit('setLoading', false)
         },
         async saveRecipe(ctx, recipeId) {
             try {
-                console.time('save')
                 if (!ctx.getters.isAuthenticated) {
-                    return console.log('Please authorize')
+                    return ctx.commit('setAlert', {
+                        type: 'warning',
+                        message: 'Authorize to save recipes'
+                    })
                 }
     
                 const savedRecipesIds = ctx.getters.savedRecipesIds
@@ -139,18 +162,22 @@ export default {
                 
                 const savedRecipes = ctx.getters.savedRecipes
                 ctx.commit('setSavedRecipes', savedRecipes.concat([parsedRecipe]))
-                console.log(data.message)
-                console.timeEnd('save')
             } catch (e) {
                 const savedRecipesIds = ctx.getters.savedRecipesIds
                 ctx.commit('setSavedRecipesIds', savedRecipesIds.filter(id => id !== recipeId))
-                console.log(e, e.message)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
         },
         async deleteRecipe(ctx, recipeId) {
             try {
                 if (!ctx.getters.isAuthenticated) {
-                    return console.log('Please authorize')
+                    return ctx.commit('setAlert', {
+                        type: 'warning',
+                        message: 'Please authorize'
+                    })
                 }
 
                 const savedRecipesIds = ctx.getters.savedRecipesIds
@@ -172,11 +199,13 @@ export default {
 
                 const savedRecipes = ctx.getters.savedRecipes
                 ctx.commit('setSavedRecipes', savedRecipes.filter(recipe => recipe.id !== recipeId))
-                console.log(data.message)
             } catch (e) {
                 const savedRecipesIds = ctx.getters.savedRecipesIds
                 ctx.commit('setSavedRecipesIds', savedRecipesIds.concat([recipeId]))
-                console.log(e, e.message)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
         },
         async fetchSavedRecipes(ctx) {
@@ -190,15 +219,18 @@ export default {
                         Authorization: `Bearer ${ctx.getters.token}`
                     }
                 })
-                const resipes = await response.json()
+                const data = await response.json()
 
                 if (!response.ok) {
-                    throw new Error(response)
+                    throw new Error(data.message || 'Something went wrong')
                 }
-                console.log(resipes)
-                ctx.commit('setSavedRecipes', resipes)
+
+                ctx.commit('setSavedRecipes', data)
             } catch (e) {
-                console.log(e)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
             ctx.commit('setLoading', false)
         }
@@ -220,9 +252,6 @@ export default {
         setRecipe(state, recipe) {
             state.recipe = recipe
         },
-        setMessage(state, message) {
-            state.message = message
-        },
         setLoading(state, loading) {
             state.loading = loading
         }
@@ -232,7 +261,6 @@ export default {
         recipesOnPage: 10,
         pageNumber: 1,
         recipe: null,
-        message: null,
         loading: false
     },
     getters: {
@@ -244,9 +272,6 @@ export default {
         },
         recipe(state) {
             return state.recipe
-        },
-        message(state) {
-            return state.message
         },
         loading(state) {
             return state.loading

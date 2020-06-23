@@ -4,7 +4,6 @@ const hostname = window.location.hostname === 'localhost' ? 'localhost:8080' : w
 export default {
     actions: {
         async registrateNewUser(ctx, credentials) {
-            // ctx.commit('setLoading', true)
             try {
                 const response = await fetch(`${window.location.protocol}//${hostname}/api/auth/registrate`, {
                     method: 'POST',
@@ -12,26 +11,27 @@ export default {
                     headers: {'Content-Type': 'application/json'}
                 })
                 const data = await response.json()
-                console.log(data)
-                if (data.message) {
-                    return (
-                        ctx.commit('setMessage', data.message)
-                        // ctx.commit('setLoading', false)
-                    )
+
+                if (!response.ok) {
+                    throw new Error(data.message)
                 }
                 
                 ctx.commit('setUser', data.user.username)
                 ctx.commit('setToken', data.token)
                 ctx.commit('setTokenExpireTime', data.tokenExpires)
                 router.push('/profile');
+                ctx.commit('setAlert', {
+                    type: 'success',
+                    message: 'Welcome aboard!'
+                })
             } catch (e) {
-                console.log(e)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
-
-            // ctx.commit('setLoading', false)
         },
         async login(ctx, credentials) {
-            // ctx.commit('setLoading', true)
             try {
                 const response = await fetch(`${window.location.protocol}//${hostname}/api/auth/login`, {
                     method: 'POST',
@@ -39,12 +39,9 @@ export default {
                     headers: {'Content-Type': 'application/json'}
                 })
                 const data = await response.json()
-                console.log(data)
-                if (data.message) {
-                    return (
-                        ctx.commit('setMessage', data.message)
-                        // ctx.commit('setLoading', false)
-                    )
+
+                if (!response.ok) {
+                    throw new Error(data.message)
                 }
                 
                 ctx.commit('setUser', data.user.username)
@@ -52,10 +49,11 @@ export default {
                 ctx.commit('setTokenExpireTime', data.tokenExpires)
                 router.push('/profile');
             } catch (e) {
-                console.log(e)
+                ctx.commit('setAlert', {
+                    type: 'danger',
+                    message: e
+                })
             }
-
-            // ctx.commit('setLoading', false)
         },
         async logout(ctx) {
             ctx.commit('setIsAuthenticated', false)
@@ -74,15 +72,15 @@ export default {
                         Authorization: `Bearer ${ctx.getters.token}`
                     }
                 })
-                const message = await response.json()               
+                const data = await response.json()               
 
                 if (!response.ok) {
-                    throw new Error(message.message)
+                    throw new Error(data.message)
                 }
 
                 ctx.commit('setAlert', {
                     type: 'success',
-                    message: message.message
+                    message: data.message
                 })
 
                 ctx.commit('showDeleteAccWindow', false)
@@ -104,15 +102,15 @@ export default {
                         Authorization: `Bearer ${ctx.getters.token}`
                     }
                 })
-                const message = await response.json()               
+                const data = await response.json()               
 
                 if (!response.ok) {
-                    throw new Error(message.message)
+                    throw new Error(data.message)
                 }
 
                 ctx.commit('setAlert', {
                     type: 'success',
-                    message: message.message
+                    message: data.message
                 })
                 ctx.commit('showChangePassWindow', false)
             } catch (e) {

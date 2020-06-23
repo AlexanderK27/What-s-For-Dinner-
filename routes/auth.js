@@ -65,7 +65,7 @@ router.post('/login',
 
             const isMatch = await bcrypt.compare(password, user.password)
             if (!isMatch) {
-                return res.status(400).json({ message: 'Indalid username or password' })
+                return res.status(400).json({ message: 'Invalid username or password' })
             }
 
             const token = await user.generateAuthToken()
