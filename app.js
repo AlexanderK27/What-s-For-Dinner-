@@ -1,9 +1,13 @@
 const express = require('express')
+const passport = require('passport')
 // const path = require('path')
+require('./oauth-setup')
 
 const app = express()
 
 app.use(express.json())
+app.use(passport.initialize())
+
 app.use('/api/recipes', require('./routes/spoonacular'))
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/user', require('./routes/user'))

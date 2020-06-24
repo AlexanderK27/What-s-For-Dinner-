@@ -2,7 +2,7 @@
     <div class="wrapper">
         <AppBackdrop />
         <div class="window">
-            <router-link to="/" replace>	
+            <router-link to="/" replace class="close-icon">	
                 <i class="material-icons md-24">highlight_off</i>
             </router-link>
             <div class="controls">
@@ -53,10 +53,12 @@
                         <hr>
                         <p><span>or use an existning account</span></p>
                     </div>
-                    <div class="social google">
-                        <img src="../../assets/google-icon.jpg" alt="google icon" />
-                        <p>Google</p>
-                    </div>
+                    <a href="/api/auth/google">
+                        <div class="social google">
+                            <img src="../../assets/google-icon.jpg" alt="google icon" />
+                            <p>Google</p>
+                        </div>
+                    </a>
                     <div class="social facebook">
                         <img src="../../assets/facebook-icon.png" alt="facebook icon" />
                         <p>Facebook</p>
@@ -137,10 +139,8 @@ export default {
                 }
                 if (type === 'registrate') {
                     this.registrateNewUser(userData)
-                    console.log('registrate', userData)
                 } else {
                     this.login(userData)
-                    console.log('login', userData)
                 }
                 
                 this.username = ''
@@ -179,7 +179,7 @@ export default {
         z-index: 3000;
         overflow: hidden;
     
-        a {
+        .close-icon {
             position: absolute;
             top: 16px;
             right: 16px;
@@ -194,6 +194,10 @@ export default {
 
         .controls {
             width: 55%;
+
+            a {
+                text-decoration: none;
+            }
 
             .hat {
                 box-sizing: border-box;

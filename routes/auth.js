@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const { check, validationResult } = require('express-validator')
+const passport = require('passport')
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 
@@ -59,7 +60,7 @@ router.post('/login',
             const { username, password } = req.body
 
             const user = await User.findOne({ username })
-            if (!user) {
+            if (!user || !user.password) {
                 return res.status(400).json({ message: 'Invalid username or password' })
             }
 
@@ -76,5 +77,44 @@ router.post('/login',
         }
     }
 )
+
+// Go to this URL to open OAuth screen
+router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
+
+// Route where user will be redirected after loggin in with google
+// We will redirect him to profile page with cookies
+router.get('/google/callback', passport.authenticate('google'), async (req, res) => {
+    const userData = {
+        username: req.user.name.givenName,
+        provider: req.user.provider,
+        idFromProvider: req.user.id
+    }
+
+    const user = await User.findOne({ 
+        provider: userData.provider, 
+        idFromProvider: userData.idFromProvider
+    })
+
+    if (!user) {
+        const createdUser = new User(userData)
+        await createdUser.save()
+
+        const token = await createdUser.generateAuthToken()
+        const tokenExpires = 24*60*60*1000 + Date.now()
+
+        const cookieData = JSON.stringify({ user: createdUser, token, tokenExpires })
+
+        res.cookie('user', cookieData, { expires: new Date(tokenExpires) })
+            .redirect(`${process.env.CLIENT_URL}/profile`)
+    } else {
+        const token = await user.generateAuthToken()
+        const tokenExpires = 24*60*60*1000 + Date.now()
+
+        const cookieData = JSON.stringify({ user, token, tokenExpires })
+
+        res.cookie('user', cookieData, { expires: new Date(tokenExpires) })
+            .redirect(`${process.env.CLIENT_URL}/profile`)
+    }
+});
 
 module.exports = router

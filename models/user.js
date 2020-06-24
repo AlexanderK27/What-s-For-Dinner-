@@ -5,14 +5,20 @@ const Recipe = require('./recipe')
 const userSchema = new Schema({
     username: { 
         type: String, 
-        unique: true, 
         required: true, 
         trim: true 
     },
     password: { 
         type: String, 
-        required: true, 
         trim: true 
+    },
+    provider: {
+        type: String,
+        trim: true
+    },
+    idFromProvider: {
+        type: String,
+        trim: true
     }
 })
 
@@ -33,6 +39,7 @@ userSchema.methods.toJSON = function() {
     const userObject = user.toObject()
 
     delete userObject.password
+    delete userObject.idFromProvider
 
     return userObject
 }

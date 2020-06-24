@@ -55,11 +55,12 @@ export default {
                 })
             }
         },
-        async logout(ctx) {
+        logout(ctx) {
             ctx.commit('setIsAuthenticated', false)
-            window.localStorage.removeItem('token')
-            window.localStorage.removeItem('expiresIn')
-            window.localStorage.removeItem('username')
+            ctx.commit('setUser', null)
+            ctx.commit('setToken', null)
+            ctx.commit('setTokenExpireTime', null)
+            ctx.commit('setProvider', null)
             router.push('/')
         },
         async deleteAccount(ctx, password) {
@@ -146,6 +147,14 @@ export default {
             }
             state.tokenExpires = time
         },
+        setProvider(state, provider) {
+            if (provider) {
+                window.localStorage.setItem('provider', provider)
+            } else {
+                window.localStorage.removeItem('provider')
+            }
+            state.provider = provider
+        },
         setIsAuthenticated(state, isAuthed) {
             state.isAuthenticated = isAuthed
         },
@@ -160,6 +169,7 @@ export default {
         user: window.localStorage.getItem('username'),
         token: window.localStorage.getItem('token'),
         tokenExpires: window.localStorage.getItem('expiresIn'),
+        provider: window.localStorage.getItem('provider'),
         isAuthenticated: false,
         savedRecipes: [],
         savedRecipesIds: []
@@ -173,6 +183,9 @@ export default {
         },
         tokenExpires(state) {
             return state.tokenExpires
+        },
+        provider(state) {
+            return state.provider
         },
         isAuthenticated(state) {
             return state.isAuthenticated

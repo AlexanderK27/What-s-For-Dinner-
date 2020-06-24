@@ -10,12 +10,18 @@
         <div class="round-button user">
             <i class="material-icons">person</i>
             <div class="settings">
-                <p>{{user}}</p>
+                <p class="username">{{user}}</p>
                 <hr>
-                <p @click="showChangePassWindow(true)">Change password</p>
-                <p @click="showDeleteAccWindow(true)">Delete account</p>
+                <div v-if="provider">
+                    <p class="disabled">Change password</p>
+                    <p class="disabled">Delete account</p>
+                </div>
+                <div v-else>
+                    <p class="update" @click="showChangePassWindow(true)">Change password</p>
+                    <p class="delete" @click="showDeleteAccWindow(true)">Delete account</p>
+                </div>
                 <hr>
-                <p @click="logout">
+                <p class="logout" @click="logout">
                     Log out
                     <i class="material-icons exit">login</i>
                 </p>
@@ -65,7 +71,7 @@ export default {
             recipe: null
         }
     },
-    computed: mapGetters(['loading', 'savedRecipes', 'user', 'deleteAccWindow', 'changePassWindow']),
+    computed: mapGetters(['loading', 'savedRecipes', 'user', 'provider', 'deleteAccWindow', 'changePassWindow']),
     methods: {
         ...mapActions(['fetchSavedRecipes', 'logout']),
         ...mapMutations(['showDeleteAccWindow', 'showChangePassWindow']),
@@ -109,18 +115,15 @@ export default {
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.7);
         }
 
-        &.back {
-            left: 30px;
-        }
+        &.back { left: 30px; }
 
         &.user {
             left: 80px;
             transition: 0.7s;
             overflow: hidden;
 
-            .material-icons {
-                display: block;
-            }
+            .material-icons { display: block; }
+
             .settings {
                 display: none;
                 box-sizing: border-box;
@@ -137,24 +140,24 @@ export default {
                 height: 200px;
                 border-radius: 26px;
 
-                .material-icons {
-                    display: none;
-                }
-                .settings {
-                    display: block;
-                }
+                .material-icons { display: none; }
+
+                .settings { display: block; }
             }
 
             p {
-                &:nth-of-type(2) {
-                    &:hover { color: #D8DD00 }
+                &.username, &.disabled { cursor: default; }
+
+                &.update:hover { color: #D8DD00; }
+
+                &.delete:hover { color: #CD0000; }
+
+                &.disabled {
+                    text-decoration: line-through;
+                    &:hover { color: #FFFFFF }
                 }
 
-                &:nth-of-type(3) {
-                    &:hover { color: #CD0000 }
-                }
-
-                &:nth-of-type(4) {
+                &.logout {
                     display: flex;
                     justify-content: center;
                     transition: 0.1s;
@@ -173,9 +176,7 @@ export default {
             }
         }
 
-        i {
-            font-size: 28px;
-        }
+        i { font-size: 28px; }
     }
 
     .recipes {
@@ -212,9 +213,7 @@ export default {
             width: 100%;
             height: 100%;
 
-            >div {
-                margin-top: 0px;
-            }
+            >div { margin-top: 0px; }
         }
     }
 }
