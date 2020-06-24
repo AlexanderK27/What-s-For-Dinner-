@@ -59,10 +59,12 @@
                             <p>Google</p>
                         </div>
                     </a>
-                    <div class="social facebook">
-                        <img src="../../assets/facebook-icon.png" alt="facebook icon" />
-                        <p>Facebook</p>
-                    </div>
+                    <a href="/api/auth/facebook">
+                        <div class="social facebook">
+                            <img src="../../assets/facebook-icon.png" alt="facebook icon" />
+                            <p>Facebook</p>
+                        </div>
+                    </a>
                 </div>
             </div>
             <div class="image"></div>

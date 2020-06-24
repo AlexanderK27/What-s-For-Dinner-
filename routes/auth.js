@@ -79,9 +79,10 @@ router.post('/login',
 )
 
 // Go to this URL to open OAuth screen
-router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
+router.get('/google', passport.authenticate('google', { scope: ['profile'] }))
+router.get('/facebook', passport.authenticate('facebook'))
 
-// Route where user will be redirected after loggin in with google
+// Routes where user data will be redirected after loggin in through Google or Facebook
 // We will redirect him to profile page with cookies
 router.get('/google/callback', passport.authenticate('google'), async (req, res) => {
     const userData = {
@@ -115,6 +116,41 @@ router.get('/google/callback', passport.authenticate('google'), async (req, res)
         res.cookie('user', cookieData, { expires: new Date(tokenExpires) })
             .redirect(`${process.env.CLIENT_URL}/profile`)
     }
-});
+})
+
+router.get('/facebook/callback', passport.authenticate('facebook'), async (req, res) => {
+    const userData = {
+        username: req.user.displayName.split(' ')[0],
+        provider: req.user.provider,
+        idFromProvider: req.user.id
+    }
+
+    const user = await User.findOne({ 
+        provider: userData.provider, 
+        idFromProvider: userData.idFromProvider
+    })
+
+    if (!user) {
+        const createdUser = new User(userData)
+        await createdUser.save()
+
+        const token = await createdUser.generateAuthToken()
+        const tokenExpires = 24*60*60*1000 + Date.now()
+
+        const cookieData = JSON.stringify({ user: createdUser, token, tokenExpires })
+
+        res.cookie('user', cookieData, { expires: new Date(tokenExpires) })
+            .redirect(`${process.env.CLIENT_URL}/profile`)
+    } else {
+        const token = await user.generateAuthToken()
+        const tokenExpires = 24*60*60*1000 + Date.now()
+
+        const cookieData = JSON.stringify({ user, token, tokenExpires })
+
+        res.cookie('user', cookieData, { expires: new Date(tokenExpires) })
+            .redirect(`${process.env.CLIENT_URL}/profile`)
+    }
+})
+
 
 module.exports = router
