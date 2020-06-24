@@ -61,6 +61,8 @@ export default {
             ctx.commit('setToken', null)
             ctx.commit('setTokenExpireTime', null)
             ctx.commit('setProvider', null)
+            ctx.commit('setSavedRecipes', [])
+            ctx.commit('setSavedRecipesIds', [])
             router.push('/')
         },
         async deleteAccount(ctx, password) {

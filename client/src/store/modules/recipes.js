@@ -225,6 +225,9 @@ export default {
                     throw new Error(data.message || 'Something went wrong')
                 }
 
+                const savedRecipesIds = data.map(recipe => recipe.id)
+                console.log(savedRecipesIds)
+                ctx.commit('setSavedRecipesIds', savedRecipesIds)
                 ctx.commit('setSavedRecipes', data)
             } catch (e) {
                 ctx.commit('setAlert', {
