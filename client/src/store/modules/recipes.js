@@ -226,7 +226,6 @@ export default {
                 }
 
                 const savedRecipesIds = data.map(recipe => recipe.id)
-                console.log(savedRecipesIds)
                 ctx.commit('setSavedRecipesIds', savedRecipesIds)
                 ctx.commit('setSavedRecipes', data)
             } catch (e) {
@@ -241,7 +240,7 @@ export default {
     mutations: {
         updateRecipes(state, recipes) {
             const pages = []
-            const amountOnPage = state.recipesOnPage || 10
+            const amountOnPage = state.recipesOnPage || 12
             
             for (let recipeIdx = 0; recipeIdx < recipes.length; recipeIdx = recipeIdx + amountOnPage) {
                 pages.push(recipes.slice(recipeIdx, recipeIdx + amountOnPage))
@@ -261,7 +260,7 @@ export default {
     },
     state: {
         recipes: [],
-        recipesOnPage: 10,
+        recipesOnPage: 12,
         pageNumber: 1,
         recipe: null,
         loading: false
