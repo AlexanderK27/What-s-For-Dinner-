@@ -28,10 +28,10 @@
             </div>
         </div>
         <div class="recipes">
-            <div class="noop" v-if="!recipe"></div>
-            <DetailedRecipe v-else :recipe="recipe" />
+            <div v-if="!recipe" class="noop"></div>
+            <DetailedRecipe v-else :recipe="recipe" @delete-recipe="onRecipeDeletes" />
         </div>
-        <div class="pictures">
+        <div :class="recipesList ? 'pictures opened' : 'pictures closed'">
             <div v-if="savedRecipes.length" >
                 <ProfileRecipeCard
                     v-for="(recipe, idx) in savedRecipes"
@@ -40,11 +40,19 @@
                     @select-recipe="openRecipeDetails"
                 />
             </div>
-            <div class="loader" v-else-if="loading">
+            <div v-else-if="loading" class="centered">
                 <AppLoader />
             </div>
-            <div v-else>
-                <p>No saved recipes yet</p>
+            <div v-else class="centered">
+                <p>
+                    Here you can find all your recipes<br>
+                    You have not saved any yet :(<br>
+                    Let's start with it!
+                </p>
+            </div>
+            <div class="pictures-toggle" @click="toggleRecipesList">
+                <i v-if="recipesList" class="material-icons">navigate_next</i>
+                <i v-else class="material-icons">navigate_before</i>
             </div>
         </div>
     </div>
@@ -67,21 +75,36 @@ export default {
         AppLoader
     },
     data() {
-        return {
-            recipe: null
+        return { 
+            recipe: null, 
+            recipesList: false
         }
     },
-    computed: mapGetters(['loading', 'savedRecipes', 'user', 'provider', 'deleteAccWindow', 'changePassWindow']),
+    computed: mapGetters([
+        'loading', 
+        'savedRecipes', 
+        'user', 
+        'provider', 
+        'deleteAccWindow', 
+        'changePassWindow'
+    ]),
     methods: {
-        ...mapActions(['fetchSavedRecipes', 'logout']),
+        ...mapActions(['fetchSavedRecipes', 'logout', 'deleteRecipe']),
         ...mapMutations(['showDeleteAccWindow', 'showChangePassWindow']),
+        toggleRecipesList() {
+            this.recipesList = !this.recipesList
+        },
         openRecipeDetails(recipe) {
+            this.toggleRecipesList()
             this.recipe = recipe
+        },
+        onRecipeDeletes(id) {
+            this.openRecipeDetails(null)
+            this.deleteRecipe(id)
         }
     },
     mounted: function () {
         this.$nextTick(function () {
-            console.log('Inside mounted')
             this.fetchSavedRecipes()
         })
     }
@@ -91,8 +114,9 @@ export default {
 <style lang="less" scoped>
 .page-wrapper {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
     background-color: #F0FDEB;
+    overflow: hidden;
 
     .round-button {
         position: fixed;
@@ -104,7 +128,7 @@ export default {
         height: 40px;
         color: #FFFFFF;
         font-weight: bold;
-        background-color: #10770C;
+        background-color: #2C8850;
         border-radius: 50%;
         transition: 0.2s;
         cursor: pointer;
@@ -201,12 +225,12 @@ export default {
     .pictures {
         box-sizing: border-box;
         height: 100vh;
-        min-width: 320px;
+        width: 320px;
         padding: 0px 4px;
-        background-color: #000000;
+        background-color: #0F0F0F;
         overflow: auto;
 
-        .loader {
+        .centered {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -214,7 +238,64 @@ export default {
             height: 100%;
 
             >div { margin-top: 0px; }
+
+            >p {
+                font-size: 14px;
+                font-weight: bold;
+                color: #FFFFFF;
+            }
+        }
+
+        .pictures-toggle {
+            display: none;
+            width: 42px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0F0F0F;
         }
     }
+}
+
+@media screen and (max-width: 1200px) {
+    .pictures {
+        position: fixed;
+        top: 0;
+        z-index: 200;
+        transition: 0.4s;
+
+        &.opened {
+            right: 0;
+
+            .pictures-toggle {
+                right: 340px;
+            }
+        }
+
+        &.closed {
+            right: -320px;
+
+            .pictures-toggle {
+                right: 40px;
+            }
+        }
+
+        .pictures-toggle {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            bottom: 50px;
+            z-index: 250;
+            transition: 0.4s;
+
+            i {
+                color: #FFFFFF;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 900px) {
+
 }
 </style>

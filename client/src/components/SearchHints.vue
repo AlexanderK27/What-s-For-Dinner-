@@ -6,8 +6,8 @@
                 :key="ingredient + idx"
                 :ref="'hint' + (idx)"
                 :tabindex="idx + 1"
-                @keyup.up.prevent="passFocus(idx, 'up')"
-                @keyup.down.prevent="passFocus(idx, 'down')"
+                @keydown.up.prevent="passFocus(idx, 'up')"
+                @keydown.down.prevent="passFocus(idx, 'down')"
                 @keyup.enter="$emit('pick-ingredient', ingredient)"
                 @click="$emit('pick-ingredient', ingredient)" 
             >
@@ -58,7 +58,7 @@ export default {
 .block {
     width: 100%;
     padding: 8px 16px;
-    background-color: #FFFFFF;
+    background-color: transparent;
 
     ul {
         margin: 0;
@@ -67,10 +67,8 @@ export default {
         text-align: left;
 
         li {
-            margin-bottom: 3px;
             padding: 8px 12px;
-            border-radius: 3px;
-            box-shadow: 0 1px 1px 1px hsla(0, 0%, 0%, 0.2);
+            background-color: #FFFFFF;
             cursor: pointer;
 
             &:hover {

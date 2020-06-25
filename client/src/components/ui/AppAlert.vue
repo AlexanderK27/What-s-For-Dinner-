@@ -72,6 +72,10 @@ export default {
                 opacity: 1;
             }
             100% {
+                width: 0;
+                height: 0;
+                padding: 0;
+                overflow: hidden;
                 transform: translateX(1000px);
                 opacity: 0;
             }
@@ -81,6 +85,12 @@ export default {
             0% { width: 100%; }
             100% { width: 0%; }
         }
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .alert-list {
+        right: 10px;
     }
 }
 </style>

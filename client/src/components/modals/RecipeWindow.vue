@@ -13,7 +13,7 @@
                         :alt="recipe.title + ' image'"
                     />
                     <div class="summary">
-                        <h2>{{recipe.title}}</h2>
+                        <h3>{{recipe.title}}</h3>
                         <p>{{recipe.readyInMinutes}} min | {{recipe.servings}} servings</p>
                         <p v-if="recipe.diets.length">
                             <strong>Diet: </strong>
@@ -53,7 +53,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="instructions" v-if="recipe.analyzedInstructions.length">
+                <div v-if="recipe.analyzedInstructions.length" class="instructions" >
                     <ol>
                         <li 
                             v-for="(step, idx) in recipe.analyzedInstructions[0].steps"
@@ -62,6 +62,9 @@
                             {{step.step}}
                         </li>
                     </ol>
+                </div>
+                <div v-else class="instructions centered" >
+                    <p>Sorry, this recipe has not any instructions</p>
                 </div>
             </div>
             <div v-else class="loader">
@@ -96,6 +99,9 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100vh;
     z-index: 1500;
@@ -106,7 +112,6 @@ export default {
         flex-direction: column;
         width: 70%;
         height: 80vh;
-        margin: 10vh 15%;
         background-color: #F4FCF0;
         border: 3px solid #77B550;
         z-index: 3000;
@@ -126,7 +131,7 @@ export default {
                 flex-wrap: wrap;
                 text-align: left;
 
-                h2 {
+                h3 {
                     margin-top: 0;
                 }
 
@@ -134,6 +139,7 @@ export default {
                     width: 100%;
                     max-width: 321px;
                     max-height: 213px;
+                    margin-bottom: 20px;
                     border: 1px solid #0F0F0F;
                 }
 
@@ -166,6 +172,12 @@ export default {
                 li {
                     text-align: left;
                 }
+
+                &.centered {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
             }
         }
 
@@ -178,6 +190,19 @@ export default {
             div {
                 margin-top: -48px;
             }
+        }
+    }
+}
+
+@media screen and (max-width: 1170px) {
+    .wrapper {
+        .window { width: 90vw; }
+    }
+}
+@media screen and (max-width: 900px) {
+    .wrapper {
+        .window { 
+            .recipe { padding: 0 16px 16px }
         }
     }
 }

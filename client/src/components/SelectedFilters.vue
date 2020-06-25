@@ -1,5 +1,5 @@
 <template>
-    <div class="block" v-if="searchType === 'word'">
+    <div v-if="searchType === 'word'" class="selected-filters">
         <div 
             v-for="(cuisine, idx) of selectedFilters.cuisines"
             :key="cuisine.name + idx"
@@ -34,7 +34,7 @@
             >clear</i>
         </div>
     </div>
-    <div class="block" v-else>
+    <div v-else class="selected-filters">
         <div 
             v-for="(ingredient, idx) of usersIngredients"
             :key="ingredient + idx"
@@ -61,7 +61,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.block {
+.selected-filters {
     display: flex;
     flex-wrap: wrap;
     width: 60%;
@@ -95,6 +95,12 @@ export default {
             color: #999999;
             cursor: pointer;
         }
+    }
+}
+
+@media screen and (max-width: 830px) {
+    .selected-filters {
+        width: 90%;
     }
 }
 </style>

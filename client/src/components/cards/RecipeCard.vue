@@ -1,5 +1,5 @@
 <template>
-    <div class="recipe" @click="$emit('get-recipe', recipe.id)">
+    <div class="recipe-card" @click="$emit('get-recipe', recipe.id)">
         <img 
             :src="'https://spoonacular.com/recipeImages/' + recipe.id + '-312x231.jpg'"
             :alt="recipe.title + ' image'"
@@ -17,21 +17,21 @@
             </div>
             <p class="title">{{recipe.title}}</p>
             <div class="info-wrapper" v-if="recipe.readyInMinutes">
-                <div class="info time">
+                <div class="info time" title="Cooking time">
                     <p>{{recipe.readyInMinutes}}</p>
                     <i class="material-icons md-18">access_time</i>
                 </div>
-                <div class="info servings">
+                <div class="info servings" title="Amount of servings">
                     <p>{{recipe.servings}}</p>
                     <i class="material-icons md-18">restaurant</i>
                 </div>
             </div>
             <div class="info-wrapper" v-else>
-                <div class="info unused">
+                <div class="info unused" title="Unused ingredients">
                     <p>{{recipe.unusedIngredients.length}}</p>
-                    <i class="material-icons md-18">not_interested</i>
+                    <i class="material-icons md-18" >not_interested</i>
                 </div>
-                <div class="info missed">
+                <div class="info missed" title="Missed ingredients">
                     <p>{{recipe.missedIngredientCount}}</p>
                     <i class="material-icons md-18">playlist_add</i>
                 </div>
@@ -55,7 +55,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.recipe {
+.recipe-card {
     display: flex;
     margin: 10px 20px;
     height: 231px;
@@ -118,12 +118,10 @@ export default {
                 }
 
                 &.time {
-                    // background-color: #FF9D5C;
                     color: #FF7D24;
                 }
 
                 &.servings, &.missed {
-                    // background-color: #FF9191;
                     color: #DB1818;
                 }
 
@@ -138,9 +136,34 @@ export default {
 
 }
 
-@media screen and (max-width: 600px) {
-    .recipe {
+@media screen and (max-width: 500px) {
+    .recipe-card {
+        box-sizing: border-box;
+        width: 96vw;
         height: 150px;
+        margin: 2vw;
+    }
+}
+
+@media screen and (max-width: 470px) {
+    .recipe-card {
+        >div {
+            overflow-y: auto;
+            .title { font-size: 14px; }
+            .info-wrapper {
+                .info {
+                    p, i { font-size: 16px; }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .recipe-card {
+        img {
+            width: 45%;
+        }
     }
 }
 </style>

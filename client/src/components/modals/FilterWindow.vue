@@ -40,8 +40,18 @@
                 </div>
             </div>
             <div class="buttons">
-                <button @click="closeWindow">Close</button>
-                <button @click="setFilters">Set filters</button>
+                <AppButton 
+                    action="button"
+                    type="rounded-block neutral"
+                    title="Close"
+                    :onClick="closeWindow"
+                />
+                <AppButton 
+                    action="button"
+                    type="rounded-block secondary"
+                    title="Set filters"
+                    :onClick="setFilters"
+                />
             </div>
         </div>
     </div>
@@ -50,7 +60,12 @@
 <script>
 import { mapMutations, mapGetters } from 'vuex'
 import AppBackdrop from '../ui/AppBackdrop'
+import AppButton from '../ui/AppButton'
 export default {
+    components: {
+        AppBackdrop,
+        AppButton
+    },
     data() {
         return {
             filters: {
@@ -117,9 +132,6 @@ export default {
             })
         }
     },
-    components: {
-        AppBackdrop
-    },
     methods: {
         ...mapMutations(['showFilterWindow', 'setSelectedFilters']),
         closeWindow() {
@@ -159,12 +171,13 @@ export default {
     z-index: 1500;
 
     .window {
-        background-color: #FFFFFF;
+        box-sizing: border-box;
         width: 90%;
-        max-width: 540px;
+        max-width: 600px;
         height: 60vh;
         padding: 16px 32px;
         border-radius: 30px;
+        background-color: #FFFFFF;
         box-shadow: 0 10px 24px hsla(0, 0%, 0%, 0.2);
         z-index: 3000;
 
@@ -215,8 +228,13 @@ export default {
         }
 
         .buttons {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-around;
             width: 100%;
-            height: 50px;
+            max-width: 300px;
+            margin: auto;
+            padding-top: 10px;
         }
     }
 }

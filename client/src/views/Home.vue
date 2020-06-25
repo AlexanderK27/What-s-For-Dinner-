@@ -31,6 +31,10 @@
             <div v-else-if="loading"><AppLoader /></div>
             <div v-else></div>
         </main>
+        <footer>
+            <a href="https://spoonacular.com/food-api">Powered by <span>Spoonacular API</span></a>
+            <p>Created by Kolomiichuk &lt;o.kolomiichuk@outlook.com&gt;</p>
+        </footer>
     </div>
 </template>
 
@@ -121,6 +125,7 @@ header {
 
 main {
     width: 80%;
+    min-height: calc(100vh - 174px);
     margin: 0 auto;
     
     .recipes-wrapper {
@@ -133,6 +138,65 @@ main {
             flex-wrap: wrap;
             justify-content: center; 
         }
+    }
+}
+
+footer {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 16px 24px;
+    text-align: left;
+    font-weight: bold;
+    font-style: italic;
+    background-color: #F1FCEA;
+
+    a { 
+        color: #2C8850; 
+        font-size: 14px;
+        text-decoration: none;
+        cursor: pointer;
+
+        span { font-style: normal; }
+    }
+    P { 
+        margin-top: 4px;
+        color: #777777;
+        font-size: 12px; 
+    }
+}
+
+@media screen and (max-width: 1320px) {
+    main {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 1170px) {
+    main {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    header {
+        padding: 12px 4%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    header {
+        h2 { font-size: 20px; }
+
+        a { div { padding: 10px 16px; font-size: 0.8rem; } }
+    }
+}
+
+@media screen and (max-width: 420px) {
+    header {
+        display: block;
+        padding: 24px 4%;
+
+        h2 { display: none; }
     }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
+    <div class="detailed-recipe">
         <div class="brief">
             <div class="recipe-photo">
                 <img :src="recipe.image" :alt="recipe.title + ' image'" />
@@ -36,6 +36,11 @@
                         :key="dish + idx"
                     >{{idx !== 0 ? ', ' : null}}{{dish}}</span>
                 </p>
+                <button 
+                    class="delete-btn" 
+                    type="button"
+                    @click="$emit('delete-recipe', recipe.id)"
+                >delete</button>
             </div>
         </div>
         <div class="details">
@@ -103,7 +108,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.wrapper {
+.detailed-recipe {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -132,6 +137,7 @@ export default {
         }
 
         .recipe-main {
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -139,6 +145,7 @@ export default {
             padding: 0 16px;
             background-color: #2C3E50;
             color: #FFFFFF;
+            z-index: 50;
 
             .with-icon {
                 display: flex;
@@ -153,14 +160,35 @@ export default {
             p {
                 margin: 0.5em 0;
             }
+
+            .delete-btn {
+                margin: 12px 0px 0px;
+                padding: 6px 14px;
+                font-size: 11px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: #FFFFFF;
+                background-color: transparent;
+                border: 1px solid #FFFFFF;
+                border-radius: 3px;
+                cursor: pointer;
+                transition: 0.2s;
+
+                &:hover {
+                    color: #2C3E50;
+                    background-color: #FFFFFF;
+                }
+            }
         }
     }
 
     .details {
         display: flex;
+        flex: 1;
 
         .ingredients {
             width: 320px;
+            height: 100%;
             text-align: left;
             background-color: #DEFCCB;
 
@@ -191,7 +219,8 @@ export default {
 
         .instructions {
             flex: 1;
-            padding: 0px 16px;
+            height: fit-content;
+            padding: 0px 16px 16px;
             text-align: left;
 
             h3 {
@@ -213,6 +242,64 @@ export default {
     }
     .step-stuff {
         display: flex;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .detailed-recipe {
+        .brief {
+            position: relative;
+
+            .recipe-photo {
+                .shadow {
+                    background: linear-gradient(to right, transparent 0%, #2C3E50 75%);
+                }
+            }
+            .recipe-main {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 380px;
+                height: 100%; 
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .detailed-recipe {
+        .brief {
+            flex-wrap: wrap;
+            width: 100vw;
+
+            .recipe-photo {
+                order: 2;
+                width: 100%;
+                border-top: 1px solid #000000;
+                overflow: hidden;
+
+                img { width: inherit; }
+                .shadow { display: none; }
+            }
+            .recipe-main {
+                order: 1;
+                position: relative;
+                box-sizing: border-box;
+                width: 100%;
+                height: fit-content;
+                padding-bottom: 20px;
+                border-top: 1px solid #000000;
+            }
+        }
+
+        .details {
+            flex-wrap: wrap;
+
+            .ingredients {
+                width: 100%;
+                height: fit-content;
+            }
+        }
     }
 }
 </style>

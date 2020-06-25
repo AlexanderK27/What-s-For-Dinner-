@@ -33,7 +33,7 @@
                 <input 
                     type="text" 
                     ref="searchInput"
-                    v-model="enteredIngredient" 
+                    v-model="findIngredientInputValue" 
                     placeholder="Your ingredient" 
                     @input="prepareSuggestions" 
                     @keyup.down.prevent="focusOnHints"
@@ -83,7 +83,7 @@ export default {
         return {
             searchType: 'word',
             searchValue: '',
-            enteredIngredient: '',
+            findIngredientInputValue: '',
             suggestions: [],
             passFocus: false
         }
@@ -92,7 +92,12 @@ export default {
         SelectedFilters,
         SearchHints
     },
-    computed: mapGetters(['usersIngredients']),
+    computed: {
+        ...mapGetters(['usersIngredients']),
+        enteredIngredient: function() {
+            return this.findIngredientInputValue.toLowerCase()
+        }
+    },
     watch: {
         searchType: 'changeSearchType'
     },
@@ -111,16 +116,16 @@ export default {
         addIngredient() {
             if (ingredients.includes(this.enteredIngredient) && !this.usersIngredients.includes(this.enteredIngredient)) {
                 this.setUsersIngredients(this.usersIngredients.concat([this.enteredIngredient]))
-                this.enteredIngredient = ''
+                this.findIngredientInputValue = ''
             }
         },
         pushToSearchInput(ingredient) {
-            this.enteredIngredient = ingredient
+            this.findIngredientInputValue = ingredient
             this.prepareSuggestions(ingredient)
             this.focusInput()
         },
         prepareSuggestions() {
-            if (this.enteredIngredient.length > 2) {
+            if (this.enteredIngredient.length > 1) {
                 const match = ingredients.filter(item => item.includes(this.enteredIngredient))
                 match.sort((a, b) => a.length - b.length)
                 this.suggestions = match.slice(0, 5)
@@ -146,7 +151,8 @@ export default {
     .search {
         position: relative;
         display: flex;
-        width: 60%;
+        width: 100%;
+        max-width: 700px;
         margin: 50px auto 14px;
 
         .icon {
@@ -232,6 +238,32 @@ export default {
 
         input, label {
             cursor: pointer;
+        }
+    }
+}
+
+@media screen and (max-width: 830px) {
+    .search-wrapper {
+        box-sizing: border-box;
+        padding: 0 10%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .search-wrapper {
+        padding: 0 2%;
+    }
+}
+
+@media screen and (max-width: 460px) {
+    .search-wrapper {
+        .search {
+            form {
+                button { font-size: 12px; }
+            }
+        }
+        .search-type-selector {
+            label { font-size: 14px; }
         }
     }
 }

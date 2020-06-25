@@ -196,6 +196,7 @@ export default {
 
         .controls {
             width: 55%;
+            min-width: 400px;
 
             a {
                 text-decoration: none;
@@ -300,7 +301,7 @@ export default {
                 }
 
                 &.facebook {
-                    margin: 0 auto;
+                    margin: 0 auto 20px;
                     color: #FFFFFF;
                     background-color: #325189;
 
@@ -329,6 +330,15 @@ export default {
                 width: 100%;
                 height: 100%;
             }
+        }
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .wrapper {
+        .window {
+            .controls { width: 100%; min-width: 260px; }
+            .image { display: none; }
         }
     }
 }

@@ -9,6 +9,7 @@
                 :id="name" 
                 :placeholder="placeholder" 
                 :class="warning ? 'warning' : 'ok'"
+                maxlength="15"
                 v-model="inputValue"
                 @input="$emit('input-change', inputValue)"
                 @blur="$emit('input-change', inputValue)"
