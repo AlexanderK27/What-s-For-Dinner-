@@ -2,8 +2,8 @@
     <div class="container">
         <header>
             <h2>
-                What's For Dinner
-                <i class="material-icons">help_outline</i>
+                <span>What's For Dinner</span>
+                <i class="material-icons" @click="openAboutWindow">help_outline</i>
             </h2>
             <router-link
                 :to="isAuthenticated ? 'profile' : '/?auth=true'"
@@ -16,6 +16,7 @@
             <RecipeWindow v-if="recipeWindow" />
             <FilterWindow v-if="filterWindow" />
             <AuthWindow v-if="$route.query.auth" />
+            <AboutWindow v-if="aboutWindow" />
             <Search />
             <div class="recipes-wrapper" v-if="allRecipes.length">
                 <Pagination :amountOfPages="allRecipes.length" />
@@ -52,6 +53,7 @@ import RecipeCard from "../components/cards/RecipeCard";
 import RecipeWindow from "../components/modals/RecipeWindow";
 import FilterWindow from "../components/modals/FilterWindow";
 import AuthWindow from "../components/modals/AuthWindow";
+import AboutWindow from "../components/modals/AboutWindow";
 import AppLoader from "../components/ui/AppLoader";
 export default {
     name: "Home",
@@ -62,6 +64,7 @@ export default {
         RecipeWindow,
         FilterWindow,
         AuthWindow,
+        AboutWindow,
         AppLoader,
     },
     computed: mapGetters([
@@ -71,15 +74,23 @@ export default {
         "recipeWindow",
         "filterWindow",
         "authWindow",
+        "aboutWindow",
         "isAuthenticated",
         "user",
     ]),
     methods: {
         ...mapActions(["fetchOneRecipe"]),
-        ...mapMutations(["showAuthWindow", "showRecipeWindow"]),
+        ...mapMutations([
+            "showAboutWindow",
+            "showAuthWindow",
+            "showRecipeWindow",
+        ]),
         openRecipeWindow(id) {
             this.fetchOneRecipe(id);
             this.showRecipeWindow(true);
+        },
+        openAboutWindow() {
+            this.showAboutWindow(true);
         },
     },
 };
@@ -104,6 +115,7 @@ header {
         display: block;
 
         i {
+            margin-left: 6px;
             cursor: pointer;
         }
     }
@@ -223,11 +235,20 @@ footer {
 
 @media screen and (max-width: 420px) {
     header {
-        display: block;
-        padding: 24px 2%;
+        padding: 0px 2%;
 
         h2 {
-            display: none;
+            text-align: center;
+
+            span {
+                display: none;
+            }
+
+            i {
+                margin: 0;
+                padding-top: 4px;
+                font-size: 38px;
+            }
         }
     }
 }
