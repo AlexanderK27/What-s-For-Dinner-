@@ -1,18 +1,22 @@
 <template>
     <div class="card" @click="$emit('select-recipe', recipe)">
-        <img 
-            :src="'https://spoonacular.com/recipeImages/' + recipe.id + '-312x231.jpg'"
+        <img
+            :src="
+				'https://spoonacular.com/recipeImages/' +
+					recipe.id +
+					'-312x231.jpg'
+			"
             :alt="recipe.title + ' image'"
         />
         <div class="about-recipe">
-            <p>{{recipe.title}}</p>
+            <p>{{ recipe.title }}</p>
             <div class="icons">
                 <div class="time">
-                    <p>{{recipe.readyInMinutes}}</p>
+                    <p>{{ recipe.readyInMinutes }}</p>
                     <i class="material-icons md-18">access_time</i>
                 </div>
                 <div class="servings">
-                    <p>{{recipe.servings}}</p>
+                    <p>{{ recipe.servings }}</p>
                     <i class="material-icons md-18">restaurant</i>
                 </div>
             </div>
@@ -25,10 +29,10 @@ export default {
     props: {
         recipe: {
             type: Object,
-            required: true
-        }
-    }
-}
+            required: true,
+        },
+    },
+};
 </script>
 
 <style lang="less" scoped>
@@ -38,7 +42,7 @@ export default {
     max-width: 312px;
     overflow: hidden;
     cursor: pointer;
-    
+
     .about-recipe {
         box-sizing: border-box;
         position: absolute;
@@ -46,7 +50,7 @@ export default {
         bottom: -41px;
         width: 100%;
         padding: 8px 16px 0px;
-        color: #FFFFFF;
+        color: @color_lightest;
         text-align: center;
         font-size: 16px;
         background-color: rgba(0, 0, 0, 0.8);
@@ -63,7 +67,7 @@ export default {
             margin: 0 auto;
             margin-bottom: 14px;
 
-            >div {
+            > div {
                 display: flex;
                 justify-content: center;
                 width: 40px;
@@ -72,20 +76,18 @@ export default {
                 p {
                     margin: 0 6px 0 0;
                     font-size: 18px;
-                    // font-weight: bold;
                 }
 
                 i {
                     font-size: 18px;
-                    // font-weight: bold;
                 }
 
                 &.time {
-                    color: #FF7D24;
+                    color: @color_warning_dark;
                 }
 
                 &.servings {
-                    color: #DB1818;
+                    color: @color_danger_dark;
                 }
             }
         }

@@ -1,16 +1,18 @@
 <template>
     <div class="recipe-card" @click="$emit('get-recipe', recipe.id)">
-        <img 
+        <img
             :src="'https://spoonacular.com/recipeImages/' + recipe.id + '-312x231.jpg'"
             :alt="recipe.title + ' image'"
         />
         <div>
             <div class="categories">
-                <i  v-if="savedRecipesIds.includes(recipe.id)"
+                <i
+                    v-if="savedRecipesIds.includes(recipe.id)"
                     class="material-icons md-18"
                     @click.stop="deleteRecipe(recipe.id)"
                 >star</i>
-                <i  v-else
+                <i
+                    v-else
                     class="material-icons md-18"
                     @click.stop="saveRecipe(recipe.id)"
                 >star_outline</i>
@@ -29,7 +31,7 @@
             <div class="info-wrapper" v-else>
                 <div class="info unused" title="Unused ingredients">
                     <p>{{recipe.unusedIngredients.length}}</p>
-                    <i class="material-icons md-18" >not_interested</i>
+                    <i class="material-icons md-18">not_interested</i>
                 </div>
                 <div class="info missed" title="Missed ingredients">
                     <p>{{recipe.missedIngredientCount}}</p>
@@ -41,17 +43,17 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
 export default {
     props: {
         recipe: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
-    computed: mapGetters(['savedRecipesIds']),
-    methods: mapActions(['saveRecipe', 'deleteRecipe'])
-}
+    computed: mapGetters(["savedRecipesIds"]),
+    methods: mapActions(["saveRecipe", "deleteRecipe"]),
+};
 </script>
 
 <style lang="less" scoped>
@@ -60,14 +62,14 @@ export default {
     margin: 10px 20px;
     height: 231px;
     width: 480px;
-    background-color: #DFFCCE;
+    background-color: @color_firm_quaternary;
     box-shadow: 0px 4px 4px hsla(0, 0%, 0%, 0.2);
-    border: 2px solid #CDFCB0;
+    border: 2px solid #cdfcb0;
     cursor: pointer;
     transition: 0.2s;
 
     &:hover {
-        border: 2px solid #89C167;
+        border: 2px solid @color_success_dark;
     }
 
     img {
@@ -75,7 +77,7 @@ export default {
         max-width: 312px;
     }
 
-    >div {
+    > div {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -86,10 +88,10 @@ export default {
             display: flex;
             justify-content: flex-end;
         }
-        
+
         .title {
             flex: 1;
-            color: #032003;
+            color: @color_darkest;
             font-weight: bold;
             text-align: center;
         }
@@ -118,11 +120,12 @@ export default {
                 }
 
                 &.time {
-                    color: #FF7D24;
+                    color: @color_warning_dark;
                 }
 
-                &.servings, &.missed {
-                    color: #DB1818;
+                &.servings,
+                &.missed {
+                    color: @color_danger_dark;
                 }
 
                 &.missed {
@@ -133,9 +136,7 @@ export default {
             }
         }
     }
-
 }
-
 @media screen and (max-width: 500px) {
     .recipe-card {
         box-sizing: border-box;
@@ -144,21 +145,24 @@ export default {
         margin: 2vw;
     }
 }
-
 @media screen and (max-width: 470px) {
     .recipe-card {
-        >div {
+        > div {
             overflow-y: auto;
-            .title { font-size: 14px; }
+            .title {
+                font-size: 14px;
+            }
             .info-wrapper {
                 .info {
-                    p, i { font-size: 16px; }
+                    p,
+                    i {
+                        font-size: 16px;
+                    }
                 }
             }
         }
     }
 }
-
 @media screen and (max-width: 340px) {
     .recipe-card {
         img {

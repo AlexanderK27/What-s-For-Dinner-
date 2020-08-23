@@ -1,12 +1,12 @@
 <template>
-    <div class="detailed-recipe">
+    <article class="detailed-recipe">
         <div class="brief">
             <div class="recipe-photo">
                 <img :src="recipe.image" :alt="recipe.title + ' image'" />
                 <div class="shadow"></div>
             </div>
-            <div class="recipe-main">
-                <h2>{{recipe.title}}</h2>      
+            <section class="recipe-main">
+                <h2>{{recipe.title}}</h2>
                 <p class="with-icon">
                     <i class="material-icons md-18">access_time</i>
                     Ready in {{recipe.readyInMinutes}} minutes
@@ -16,35 +16,35 @@
                     {{recipe.servings}} servings
                 </p>
                 <p v-if="recipe.diets.length">
-                    <strong>Diet: </strong>
-                    <span 
+                    <strong>Diet:</strong>
+                    <span
                         v-for="(diet, idx) in recipe.diets"
                         :key="diet + idx"
                     >{{idx !== 0 ? ', ' : null}}{{diet}}</span>
                 </p>
                 <p v-if="recipe.cuisines.length">
-                    <strong>Cuisine: </strong>
-                    <span 
+                    <strong>Cuisine:</strong>
+                    <span
                         v-for="(cuisine, idx) in recipe.cuisines"
                         :key="cuisine + idx"
                     >{{idx !== 0 ? ', ' : null}}{{cuisine}}</span>
                 </p>
                 <p v-if="recipe.dishTypes.length">
-                    <strong>Dish type: </strong>
-                    <span 
+                    <strong>Dish type:</strong>
+                    <span
                         v-for="(dish, idx) in recipe.dishTypes"
                         :key="dish + idx"
                     >{{idx !== 0 ? ', ' : null}}{{dish}}</span>
                 </p>
-                <button 
-                    class="delete-btn" 
+                <button
+                    class="delete-btn"
                     type="button"
                     @click="$emit('delete-recipe', recipe.id)"
                 >delete</button>
-            </div>
+            </section>
         </div>
         <div class="details">
-            <div class="ingredients" v-if="recipe.extendedIngredients.length">
+            <section class="ingredients" v-if="recipe.extendedIngredients.length">
                 <h4>
                     <i class="material-icons">menu_book</i>
                     Ingredients
@@ -55,21 +55,22 @@
                         :key="ingred.name + idx"
                         @click="handleChecklist(ingred.name + idx)"
                     >
-                        <i v-if="!checklist.includes(ingred.name + idx)" class="material-icons">
-                            check_box_outline_blank
-                        </i>
+                        <i
+                            v-if="!checklist.includes(ingred.name + idx)"
+                            class="material-icons"
+                        >check_box_outline_blank</i>
                         <i v-else class="material-icons">check_box</i>
                         {{ingred.measures.metric.unitShort === 'ml' || ingred.measures.metric.unitShort === 'g'
-                            ? Math.round(ingred.measures.metric.amount)
-                            : ingred.measures.metric.amount}}
+                        ? Math.round(ingred.measures.metric.amount)
+                        : ingred.measures.metric.amount}}
                         {{ingred.measures.metric.unitShort}}
                         <b>{{ingred.name}}</b>
                     </li>
                 </ul>
-            </div>
-            <div class="instructions" v-if="recipe.analyzedInstructions.length">
+            </section>
+            <section class="instructions" v-if="recipe.analyzedInstructions.length">
                 <h3>Cooking process</h3>
-                <div 
+                <div
                     v-for="(step, idx) in recipe.analyzedInstructions[0].steps"
                     :key="'step' + idx"
                     class="step"
@@ -77,9 +78,9 @@
                     <i>Step {{idx + 1}}:</i>
                     <p>{{step.step}}</p>
                 </div>
-            </div>
+            </section>
         </div>
-    </div>
+    </article>
 </template>
 
 <script>
@@ -87,24 +88,24 @@ export default {
     props: {
         recipe: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
-            checklist: []
-        }
+            checklist: [],
+        };
     },
     methods: {
         handleChecklist(name) {
             if (this.checklist.includes(name)) {
-                this.checklist = this.checklist.filter(item => item !== name)
+                this.checklist = this.checklist.filter((item) => item !== name);
             } else {
-                this.checklist.push(name)
+                this.checklist.push(name);
             }
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <style lang="less" scoped>
@@ -132,7 +133,11 @@ export default {
                 right: -10px;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(to right, transparent 15%, #2C3E50 98%);
+                background: linear-gradient(
+                    to right,
+                    transparent 15%,
+                    @color_firm_tertiary 98%
+                );
             }
         }
 
@@ -143,9 +148,9 @@ export default {
             justify-content: center;
             align-items: center;
             padding: 0 16px;
-            background-color: #2C3E50;
-            color: #FFFFFF;
-            z-index: 50;
+            background-color: @color_firm_tertiary;
+            color: @color_lightest;
+            z-index: 2;
 
             .with-icon {
                 display: flex;
@@ -167,16 +172,16 @@ export default {
                 font-size: 11px;
                 letter-spacing: 1px;
                 text-transform: uppercase;
-                color: #FFFFFF;
+                color: @color_lightest;
                 background-color: transparent;
-                border: 1px solid #FFFFFF;
+                border: 1px solid @color_lightest;
                 border-radius: 3px;
                 cursor: pointer;
                 transition: 0.2s;
 
                 &:hover {
-                    color: #2C3E50;
-                    background-color: #FFFFFF;
+                    color: @color_firm_tertiary;
+                    background-color: @color_lightest;
                 }
             }
         }
@@ -190,7 +195,7 @@ export default {
             width: 320px;
             height: 100%;
             text-align: left;
-            background-color: #DEFCCB;
+            background-color: @color_firm_quaternary;
 
             h4 {
                 display: flex;
@@ -229,7 +234,7 @@ export default {
                 margin: 18px auto;
                 padding-bottom: 8px;
                 text-align: center;
-                border-bottom: 2px solid #2C3E50;
+                border-bottom: 2px solid @color_firm_tertiary;
             }
 
             .step {
@@ -244,7 +249,6 @@ export default {
         display: flex;
     }
 }
-
 @media screen and (max-width: 900px) {
     .detailed-recipe {
         .brief {
@@ -252,7 +256,11 @@ export default {
 
             .recipe-photo {
                 .shadow {
-                    background: linear-gradient(to right, transparent 0%, #2C3E50 75%);
+                    background: linear-gradient(
+                        to right,
+                        transparent 0%,
+                        @color_firm_tertiary 75%
+                    );
                 }
             }
             .recipe-main {
@@ -260,13 +268,12 @@ export default {
                 top: 0;
                 right: 0;
                 width: 380px;
-                height: 100%; 
+                height: 100%;
             }
         }
     }
 }
-
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 550px) {
     .detailed-recipe {
         .brief {
             flex-wrap: wrap;
@@ -275,11 +282,15 @@ export default {
             .recipe-photo {
                 order: 2;
                 width: 100%;
-                border-top: 1px solid #000000;
+                border-top: 1px solid #0f0f0f;
                 overflow: hidden;
 
-                img { width: inherit; }
-                .shadow { display: none; }
+                img {
+                    width: inherit;
+                }
+                .shadow {
+                    display: none;
+                }
             }
             .recipe-main {
                 order: 1;
@@ -288,7 +299,7 @@ export default {
                 width: 100%;
                 height: fit-content;
                 padding-bottom: 20px;
-                border-top: 1px solid #000000;
+                border-top: 1px solid #0f0f0f;
             }
         }
 

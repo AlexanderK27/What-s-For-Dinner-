@@ -8,13 +8,6 @@
 
 <script>
 export default {
-    name: 'NotFound',
-    components: {
-        
-    }
-}
+    name: "NotFound",
+};
 </script>
-
-<style lang="less" scoped>
-
-</style>

@@ -1,72 +1,67 @@
 <template>
-    <div class="wrapper">
-        <AppBackdrop />
+    <div class="window-wrapper">
         <div class="window">
-            <i
-                class="material-icons md-48"
-                @click="closeWindow"
-            >clear</i>
-            <div v-if="recipe" class="recipe">
+            <i class="material-icons md-36" @click="closeWindow">clear</i>
+            <article v-if="recipe" class="recipe">
                 <div class="head">
                     <img
                         :src="'https://spoonacular.com/recipeImages/' + recipe.id + '-312x231.jpg'"
                         :alt="recipe.title + ' image'"
                     />
-                    <div class="summary">
+                    <section class="summary">
                         <h3>{{recipe.title}}</h3>
                         <p>{{recipe.readyInMinutes}} min | {{recipe.servings}} servings</p>
                         <p v-if="recipe.diets.length">
-                            <strong>Diet: </strong>
-                            <span 
+                            <strong>Diet:</strong>
+                            <span
                                 v-for="(diet, idx) in recipe.diets"
                                 :key="diet + idx"
                             >{{idx !== 0 ? ', ' : null}}{{diet}}</span>
                         </p>
                         <p v-if="recipe.cuisines.length">
-                            <strong>Cuisine: </strong>
-                            <span 
+                            <strong>Cuisine:</strong>
+                            <span
                                 v-for="(cuisine, idx) in recipe.cuisines"
                                 :key="cuisine + idx"
                             >{{idx !== 0 ? ', ' : null}}{{cuisine}}</span>
                         </p>
                         <p v-if="recipe.dishTypes.length">
-                            <strong>Dish type: </strong>
-                            <span 
+                            <strong>Dish type:</strong>
+                            <span
                                 v-for="(dish, idx) in recipe.dishTypes"
                                 :key="dish + idx"
                             >{{idx !== 0 ? ', ' : null}}{{dish}}</span>
                         </p>
-                    </div>
-                    <div class="ingredients">
-                        <p>Ingredients:</p>
-                        <ul v-if="recipe.extendedIngredients.length">
-                            <li 
+                    </section>
+                    <section v-if="recipe.extendedIngredients.length" class="ingredients">
+                        <h4>Ingredients ({{recipe.extendedIngredients.length}}):</h4>
+                        <ul>
+                            <li
                                 v-for="(ingred, idx) in recipe.extendedIngredients"
                                 :key="ingred + idx"
                             >
                                 {{ingred.measures.metric.unitShort === 'ml' || ingred.measures.metric.unitShort === 'g'
-                                    ? Math.round(ingred.measures.metric.amount)
-                                    : ingred.measures.metric.amount}}
+                                ? Math.round(ingred.measures.metric.amount)
+                                : ingred.measures.metric.amount}}
                                 {{ingred.measures.metric.unitShort}}
                                 <b>{{ingred.name}}</b>
                             </li>
                         </ul>
-                    </div>
+                    </section>
                 </div>
-                <div v-if="recipe.analyzedInstructions.length" class="instructions" >
+                <section v-if="recipe.analyzedInstructions.length" class="instructions">
+                    <h4>Steps ({{recipe.analyzedInstructions[0].steps.length}}):</h4>
                     <ol>
-                        <li 
+                        <li
                             v-for="(step, idx) in recipe.analyzedInstructions[0].steps"
                             :key="'step' + idx"
-                        >
-                            {{step.step}}
-                        </li>
+                        >{{step.step}}</li>
                     </ol>
-                </div>
-                <div v-else class="instructions centered" >
+                </section>
+                <div v-else class="instructions centered">
                     <p>Sorry, this recipe has not any instructions</p>
                 </div>
-            </div>
+            </article>
             <div v-else class="loader">
                 <AppLoader />
             </div>
@@ -75,134 +70,169 @@
 </template>
 
 <script>
-import AppBackdrop from '../ui/AppBackdrop'
-import AppLoader from '../ui/AppLoader'
-import { mapGetters, mapMutations } from 'vuex'
+import AppLoader from "../ui/AppLoader";
+import { mapGetters, mapMutations } from "vuex";
 export default {
-    computed: mapGetters(['recipe']),
+    computed: mapGetters(["recipe"]),
     components: {
-        AppBackdrop,
-        AppLoader
+        AppLoader,
     },
     methods: {
-        ...mapMutations(['setRecipe', 'showRecipeWindow']),
+        ...mapMutations(["setRecipe", "showRecipeWindow"]),
         closeWindow() {
-            this.showRecipeWindow(false)
-            this.setRecipe(null)
-        }
-    }
-}
+            this.showRecipeWindow(false);
+            this.setRecipe(null);
+        },
+    },
+};
 </script>
 
 <style lang="less" scoped>
-.wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100vh;
-    z-index: 1500;
+.window {
+    flex-direction: column;
+    max-width: 70%;
+    max-height: 80vh;
+    background-color: @color_firm_secondary;
+    border: 3px solid @color_success_dark;
+    border-radius: 0;
 
-    .window {
-        position: fixed;
-        display: flex;
-        flex-direction: column;
-        width: 70%;
-        height: 80vh;
-        background-color: #F4FCF0;
-        border: 3px solid #77B550;
-        z-index: 3000;
+    > i {
+        font-size: 36px;
+        text-align: right;
+        cursor: pointer;
+    }
 
-        >i {
-            font-size: 48px;
-            text-align: right;
-            cursor: pointer;
-        }
+    .recipe {
+        padding: 0px 24px 24px;
+        overflow: auto;
 
-        .recipe {
-            padding: 0px 48px 48px;
-            overflow: auto;
+        .head {
+            display: flex;
+            flex-wrap: wrap;
+            text-align: left;
 
-            .head {
-                display: flex;
-                flex-wrap: wrap;
-                text-align: left;
+            h3 {
+                margin-top: 0;
+            }
 
-                h3 {
+            img {
+                width: 100%;
+                max-width: 321px;
+                max-height: 213px;
+                margin-bottom: 20px;
+                border: 1px solid @color_firm_tertiary;
+            }
+
+            .summary {
+                flex: 1;
+                min-width: 200px;
+                margin: 0px 16px;
+            }
+
+            .ingredients {
+                flex: 1;
+                min-width: 200px;
+
+                h4 {
                     margin-top: 0;
                 }
 
-                img {
-                    width: 100%;
-                    max-width: 321px;
-                    max-height: 213px;
-                    margin-bottom: 20px;
-                    border: 1px solid #0F0F0F;
-                }
-
-                .summary {
-                    flex: 1;
-                    margin: 0px 16px;
-                    padding: 0px 16px;
-                }
-
-                .ingredients {
-                    min-width: 200px;
-
-                    p {
-                        margin-top: 0;
-                    }
-
-                    ul {
-                        padding-left: 20px;
-                    }
-                }
-            }
-            
-            .instructions {
-                margin-top: 36px;
-
-                ol {
+                ul {
                     padding-left: 20px;
-                }
-
-                li {
-                    text-align: left;
-                }
-
-                &.centered {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                    list-style-type: square;
                 }
             }
         }
 
-        .loader {
-            display: flex;
-            flex: 1;
-            justify-content: center;
-            align-items: center;
+        .instructions {
+            margin-top: 12px;
+            text-align: left;
 
-            div {
-                margin-top: -48px;
+            h4 {
+                margin: 0;
+            }
+
+            ol {
+                padding-left: 20px;
+            }
+
+            &.centered {
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         }
     }
-}
 
+    .loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 500px;
+
+        div {
+            margin-top: -48px;
+        }
+    }
+}
+@media screen and (min-width: 1250px) {
+    .window {
+        max-width: 880px;
+        max-height: 500px;
+    }
+}
 @media screen and (max-width: 1170px) {
-    .wrapper {
-        .window { width: 90vw; }
+    .window {
+        max-width: 700px;
     }
 }
 @media screen and (max-width: 900px) {
-    .wrapper {
-        .window { 
-            .recipe { padding: 0 16px 16px }
+    .window {
+        max-width: 80%;
+
+        .recipe {
+            padding: 0 16px 16px;
+
+            .head {
+                img {
+                    width: 80%;
+                }
+            }
+        }
+    }
+}
+@media screen and (max-width: 740px) {
+    .window {
+        .recipe {
+            .head {
+                img {
+                    width: 100%;
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+                .summary {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+}
+@media screen and (max-width: 580px) {
+    .window {
+        max-width: 90%;
+    }
+}
+@media screen and (max-width: 500px) {
+    .window {
+        .recipe {
+            .head {
+                .ingredients {
+                    width: 100%;
+                    padding: 12px 0;
+                    border-top: 1px solid @color_success_dark;
+                    border-bottom: 1px solid @color_success_dark;
+                }
+            }
         }
     }
 }

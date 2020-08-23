@@ -1,17 +1,19 @@
 <template>
     <div class="block">
         <ul>
-            <li 
+            <li
                 v-for="(ingredient, idx) in suggestions"
                 :key="ingredient + idx"
-                :ref="'hint' + (idx)"
+                :ref="'hint' + idx"
                 :tabindex="idx + 1"
                 @keydown.up.prevent="passFocus(idx, 'up')"
                 @keydown.down.prevent="passFocus(idx, 'down')"
                 @keyup.enter="$emit('pick-ingredient', ingredient)"
-                @click="$emit('pick-ingredient', ingredient)" 
+                @click="$emit('pick-ingredient', ingredient)"
             >
-                {{ingredient.split(match)[0]}}<b>{{match}}</b>{{ingredient.split(match)[1]}}
+                <span>{{ingredient.split(match)[0]}}</span>
+                <b>{{match}}</b>
+                <span>{{ingredient.split(match)[1]}}</span>
             </li>
         </ul>
     </div>
@@ -22,36 +24,35 @@ export default {
     props: {
         suggestions: {
             type: Array,
-            required: true
+            required: true,
         },
         match: String,
-        focused: Boolean
+        focused: Boolean,
     },
     watch: {
-        focused: 'setFocusOnFirstHint'
+        focused: "setFocusOnFirstHint",
     },
     methods: {
         setFocusOnFirstHint(val) {
             if (val) {
-                this.$refs.hint0[0].focus()
+                this.$refs.hint0[0].focus();
             }
         },
         passFocus(idx, keyType) {
-            if (keyType === 'up') {
+            if (keyType === "up") {
                 if (idx === 0) {
-                    this.$emit('focus-on-input')
+                    this.$emit("focus-on-input");
                 } else {
-                    this.$refs['hint' + (idx - 1)][0].focus()
+                    this.$refs["hint" + (idx - 1)][0].focus();
                 }
-            } else if (keyType === 'down') {
+            } else if (keyType === "down") {
                 if (idx + 1 !== this.suggestions.length) {
-                    this.$refs['hint' + (idx + 1)][0].focus()
+                    this.$refs["hint" + (idx + 1)][0].focus();
                 }
             }
-            
-        }
-    }
-}
+        },
+    },
+};
 </script>
 
 <style lang="less" scoped>
@@ -68,15 +69,15 @@ export default {
 
         li {
             padding: 8px 12px;
-            background-color: #FFFFFF;
+            background-color: @color_lightest;
             cursor: pointer;
 
-            &:hover {
-                background-color: #EEEEEE;
+            &:hover,
+            &:focus {
+                background-color: @color_grey_9;
             }
 
             &:focus {
-                background-color: #DDDDDD;
                 outline: none;
             }
         }

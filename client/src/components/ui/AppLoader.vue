@@ -1,8 +1,17 @@
 <template>
     <div class="lds-default">
-        <div></div><div></div><div></div><div></div>
-        <div></div><div></div><div></div><div></div>
-        <div></div><div></div><div></div><div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
 </template>
 
@@ -18,7 +27,7 @@
         position: absolute;
         width: 6px;
         height: 6px;
-        background: #2C8850;
+        background: @color_firm_primary;
         border-radius: 50%;
         animation: lds-default 1.2s linear infinite;
 
@@ -97,11 +106,14 @@
 }
 
 @keyframes lds-default {
-  0%, 20%, 80%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.5);
-  }
+    0%,
+    20%,
+    80%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
 }
 </style>

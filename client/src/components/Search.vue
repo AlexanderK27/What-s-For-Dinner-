@@ -3,69 +3,56 @@
         <SelectedFilters />
         <div class="search" v-if="searchType === 'word'">
             <div class="icon filter">
-                <i 
-                    class="material-icons md-36"
-                    @click="openFilter"
-                >construction</i>
+                <i class="material-icons md-36" @click="openFilter">construction</i>
             </div>
             <form @submit.prevent="fetchRecipes(searchValue)">
-                <input 
-                    type="text" 
-                    placeholder="Dish name"
-                    v-model="searchValue" 
-                />
-                <i 
-                    v-if="searchValue !== ''" 
+                <input type="text" placeholder="Pizza" v-model="searchValue" />
+                <i
+                    v-if="searchValue !== ''"
                     class="material-icons md-24 clear"
                     @click="clearInput"
                 >clear</i>
                 <button type="submit">search</button>
-            </form> 
+            </form>
         </div>
-        <div class="search" v-else >
+        <div class="search" v-else>
             <div class="icon search">
-                <i 
+                <i
                     class="material-icons md-36"
                     @click="fetchRecipesByIngredients(usersIngredients)"
                 >search</i>
             </div>
             <form @submit.prevent="addIngredient">
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     ref="searchInput"
-                    v-model="findIngredientInputValue" 
-                    placeholder="Your ingredient" 
-                    @input="prepareSuggestions" 
+                    v-model="findIngredientInputValue"
+                    placeholder="Carrot"
+                    @input="prepareSuggestions"
                     @keyup.down.prevent="focusOnHints"
                 />
                 <button type="submit">add one</button>
                 <div v-if="suggestions.length && enteredIngredient" class="search-hints">
-                    <SearchHints 
-                        :suggestions="suggestions" 
+                    <SearchHints
+                        :suggestions="suggestions"
                         :match="enteredIngredient"
                         :focused="passFocus"
                         @pick-ingredient="pushToSearchInput"
                         @focus-on-input="focusInput"
                     />
                 </div>
-            </form> 
+            </form>
         </div>
         <div class="search-type-selector">
             <form>
-                <input 
-                    type="radio" 
-                    id="byWord" 
-                    name="searchType" 
-                    value="word" 
-                    v-model="searchType" 
-                />
-                <label for="byWord">Search by word in name</label>
-                <input 
-                    type="radio" 
-                    id="byIngredients" 
-                    name="searchType" 
-                    value="ingredient" 
-                    v-model="searchType" 
+                <input type="radio" id="byWord" name="searchType" value="word" v-model="searchType" />
+                <label for="byWord">Search by a dish name</label>
+                <input
+                    type="radio"
+                    id="byIngredients"
+                    name="searchType"
+                    value="ingredient"
+                    v-model="searchType"
                 />
                 <label for="byIngredients">Search by ingredients</label>
             </form>
@@ -74,74 +61,85 @@
 </template>
 
 <script>
-import { mapMutations, mapActions, mapGetters } from 'vuex'
-import SelectedFilters from './SelectedFilters'
-import SearchHints from './SearchHints'
-import ingredients from '../db/ingredients'
+import { mapMutations, mapActions, mapGetters } from "vuex";
+import SelectedFilters from "./SelectedFilters";
+import SearchHints from "./SearchHints";
+import ingredients from "../db/ingredients";
 export default {
     data() {
         return {
-            searchType: 'word',
-            searchValue: '',
-            findIngredientInputValue: '',
+            searchType: "word",
+            searchValue: "",
+            findIngredientInputValue: "",
             suggestions: [],
-            passFocus: false
-        }
+            passFocus: false,
+        };
     },
     components: {
         SelectedFilters,
-        SearchHints
+        SearchHints,
     },
     computed: {
-        ...mapGetters(['usersIngredients']),
-        enteredIngredient: function() {
-            return this.findIngredientInputValue.toLowerCase()
-        }
+        ...mapGetters(["usersIngredients"]),
+        enteredIngredient: function () {
+            return this.findIngredientInputValue.toLowerCase();
+        },
     },
     watch: {
-        searchType: 'changeSearchType'
+        searchType: "changeSearchType",
     },
     methods: {
-        ...mapActions(['fetchRecipes', 'fetchRecipesByIngredients']),
-        ...mapMutations(['setSearchType', 'showFilterWindow', 'setUsersIngredients']),
+        ...mapActions(["fetchRecipes", "fetchRecipesByIngredients"]),
+        ...mapMutations([
+            "setSearchType",
+            "showFilterWindow",
+            "setUsersIngredients",
+        ]),
         clearInput() {
-            this.searchValue = ''
+            this.searchValue = "";
         },
         changeSearchType(type) {
-            this.setSearchType(type)
+            this.setSearchType(type);
         },
         openFilter() {
-            this.showFilterWindow(true)
+            this.showFilterWindow(true);
         },
         addIngredient() {
-            if (ingredients.includes(this.enteredIngredient) && !this.usersIngredients.includes(this.enteredIngredient)) {
-                this.setUsersIngredients(this.usersIngredients.concat([this.enteredIngredient]))
-                this.findIngredientInputValue = ''
+            if (
+                ingredients.includes(this.enteredIngredient) &&
+                !this.usersIngredients.includes(this.enteredIngredient)
+            ) {
+                this.setUsersIngredients(
+                    this.usersIngredients.concat([this.enteredIngredient])
+                );
+                this.findIngredientInputValue = "";
             }
         },
         pushToSearchInput(ingredient) {
-            this.findIngredientInputValue = ingredient
-            this.prepareSuggestions(ingredient)
-            this.focusInput()
+            this.findIngredientInputValue = ingredient;
+            this.prepareSuggestions(ingredient);
+            this.focusInput();
         },
         prepareSuggestions() {
             if (this.enteredIngredient.length > 1) {
-                const match = ingredients.filter(item => item.includes(this.enteredIngredient))
-                match.sort((a, b) => a.length - b.length)
-                this.suggestions = match.slice(0, 5)
+                const match = ingredients.filter((item) =>
+                    item.includes(this.enteredIngredient)
+                );
+                match.sort((a, b) => a.length - b.length);
+                this.suggestions = match.slice(0, 5);
             } else {
-                this.suggestions = []
+                this.suggestions = [];
             }
         },
         focusInput() {
-            this.$refs.searchInput.focus()
-            this.passFocus = false
+            this.$refs.searchInput.focus();
+            this.passFocus = false;
         },
         focusOnHints() {
-            this.passFocus = true
-        }
-    }
-}
+            this.passFocus = true;
+        },
+    },
+};
 </script>
 
 <style lang="less" scoped>
@@ -165,13 +163,13 @@ export default {
 
             i {
                 font-size: 32px;
-                color: #2C7750;
+                color: @color_firm_primary;
                 cursor: pointer;
                 transition: 50ms;
 
                 &:hover {
                     font-size: 36px;
-                } 
+                }
             }
         }
 
@@ -182,15 +180,15 @@ export default {
                 box-sizing: border-box;
                 width: 100%;
                 padding: 10px calc(24% + 33px) 10px 4%;
-                border: 2px solid #2CB950;
+                border: 2px solid #2cb950;
                 border-radius: 20px;
-                color: #888888;
+                color: @color_firm_tertiary;
                 font-weight: bold;
                 font-size: 16px;
                 outline: none;
 
                 &::placeholder {
-                    color: #BBBBBB;
+                    color: @color_grey_7;
                 }
             }
 
@@ -199,12 +197,12 @@ export default {
                 top: 9px;
                 right: calc(20% + 9px);
                 font-size: 24px;
-                color: #BBBBBB;
+                color: @color_grey_7;
                 transition: 0.2s;
                 cursor: pointer;
 
                 &:hover {
-                    color: #AAAAAA;
+                    color: @color_grey_6;
                 }
             }
 
@@ -215,8 +213,8 @@ export default {
                 bottom: 0;
                 width: 20%;
                 height: 42px;
-                background: linear-gradient(120deg, #2CA050 0%, #2CC150 120%);
-                color: #FFFFFF;
+                background: linear-gradient(120deg, #2ca050 0%, #2cc150 120%);
+                color: @color_lightest;
                 text-transform: uppercase;
                 letter-spacing: 1px;
                 border: none;
@@ -236,7 +234,8 @@ export default {
     .search-type-selector {
         margin-bottom: 30px;
 
-        input, label {
+        input,
+        label {
             cursor: pointer;
         }
     }
@@ -255,15 +254,24 @@ export default {
     }
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 500px) {
     .search-wrapper {
         .search {
             form {
-                button { font-size: 12px; }
+                button {
+                    font-size: 12px;
+                    border-top-right-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                }
+                input {
+                    border-radius: 10px;
+                }
             }
         }
         .search-type-selector {
-            label { font-size: 14px; }
+            label {
+                font-size: 14px;
+            }
         }
     }
 }

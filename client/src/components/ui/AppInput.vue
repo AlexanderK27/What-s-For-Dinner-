@@ -1,30 +1,24 @@
 <template>
     <div class="input-field">
-        <label v-if="label" :for="name">
-            {{label}}
-        </label>
+        <label v-if="label" :for="name">{{label}}</label>
         <div class="input-area">
-            <input 
-                :type="inputType" 
-                :id="name" 
-                :placeholder="placeholder" 
+            <input
+                :type="inputType"
+                :id="name"
+                :placeholder="placeholder"
                 :class="warning ? 'warning' : 'ok'"
                 maxlength="15"
                 v-model="inputValue"
                 @input="$emit('input-change', inputValue)"
                 @blur="$emit('input-change', inputValue)"
             />
-            <i 
-                v-if="showPasswordIcon" 
+            <i
+                v-if="showPasswordIcon"
                 :class="warning ? 'material-icons warning' : 'material-icons ok'"
-                @click="onShowPassword" 
-            >
-                {{show ? 'visibility_off' : 'visibility'}}
-            </i>
+                @click="onShowPassword"
+            >{{show ? 'visibility_off' : 'visibility'}}</i>
         </div>
-        <small v-if="warning">
-            {{warning}}
-        </small>
+        <small v-if="warning">{{warning}}</small>
     </div>
 </template>
 
@@ -33,29 +27,33 @@ export default {
     props: {
         name: { type: String, required: true },
         label: { type: String },
-        type: { type: String, default: 'text' },
+        type: { type: String, default: "text" },
         placeholder: { type: String },
         value: { type: String },
         warning: { type: String },
-        showPasswordIcon: { type: Boolean, default: false }
+        showPasswordIcon: { type: Boolean, default: false },
     },
     data() {
         return {
             show: false,
             inputType: this.type,
-            inputValue: this.value
-        }
+            inputValue: this.value,
+        };
     },
     watch: {
-        value: function() { this.inputValue = this.value }
+        value: function () {
+            this.inputValue = this.value;
+        },
     },
     methods: {
         onShowPassword() {
-            this.inputType === 'text' ? this.inputType = 'password' : this.inputType = 'text'
-            this.show = !this.show
-        }
-    }
-}
+            this.inputType === "text"
+                ? (this.inputType = "password")
+                : (this.inputType = "text");
+            this.show = !this.show;
+        },
+    },
+};
 </script>
 
 <style lang="less" scoped>
@@ -63,13 +61,18 @@ export default {
     width: 100%;
     text-align: left;
 
-    label, small {
+    label,
+    small {
         margin-left: 6px;
     }
 
     label {
         font-size: 14px;
         font-weight: bold;
+    }
+
+    small {
+        color: @color_danger_dark;
     }
 
     .input-area {
@@ -82,14 +85,14 @@ export default {
             font-family: Avenir, Helvetica, Arial, sans-serif;
             border-style: solid;
             border-radius: 8px;
-            outline-color: #000000;
+            outline-color: @color_darkest;
 
             &.ok {
-                border-color: #BBBBBB;
+                border-color: @color_grey_9;
             }
 
             &.warning {
-                border-color: #CD0000;
+                border-color: @color_danger_dark;
                 outline: none;
             }
         }
@@ -101,19 +104,13 @@ export default {
             cursor: pointer;
 
             &.ok {
-                color: #2C3E50;
+                color: @color_firm_tertiary;
             }
 
             &.warning {
-                color: #CD0000;
+                color: @color_danger_dark;
             }
         }
     }
-
-    small {
-        color: #CD0000;
-    }
-
-
 }
 </style>

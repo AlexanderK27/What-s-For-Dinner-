@@ -1,8 +1,8 @@
 <template>
     <div class="page-wrapper">
-        <ChangePassWindow v-if="changePassWindow"/>
-        <DeleteAccWindow v-if="deleteAccWindow"/>
-        <router-link to='/'>
+        <ChangePassWindow v-if="changePassWindow" />
+        <DeleteAccWindow v-if="deleteAccWindow" />
+        <router-link to="/">
             <div class="round-button back">
                 <i class="material-icons">arrow_back</i>
             </div>
@@ -10,8 +10,8 @@
         <div class="round-button user">
             <i class="material-icons">person</i>
             <div class="settings">
-                <p class="username">{{user}}</p>
-                <hr>
+                <p class="username">{{ user }}</p>
+                <hr />
                 <div v-if="provider">
                     <p class="disabled">Change password</p>
                     <p class="disabled">Delete account</p>
@@ -20,19 +20,19 @@
                     <p class="update" @click="showChangePassWindow(true)">Change password</p>
                     <p class="delete" @click="showDeleteAccWindow(true)">Delete account</p>
                 </div>
-                <hr>
+                <hr />
                 <p class="logout" @click="logout">
                     Log out
                     <i class="material-icons exit">login</i>
                 </p>
             </div>
         </div>
-        <div class="recipes">
+        <main class="recipes">
             <div v-if="!recipe" class="noop"></div>
             <DetailedRecipe v-else :recipe="recipe" @delete-recipe="onRecipeDeletes" />
-        </div>
-        <div :class="recipesList ? 'pictures opened' : 'pictures closed'">
-            <div v-if="savedRecipes.length" >
+        </main>
+        <aside :class="recipesList ? 'pictures opened' : 'pictures closed'">
+            <div v-if="savedRecipes.length">
                 <ProfileRecipeCard
                     v-for="(recipe, idx) in savedRecipes"
                     :key="recipe.title + idx"
@@ -45,77 +45,78 @@
             </div>
             <div v-else class="centered">
                 <p>
-                    Here you can find all your recipes<br>
-                    You have not saved any yet :(<br>
-                    Let's start with it!
+                    Here you can find all your recipes
+                    <br />You have not saved any yet :(
+                    <br />Let's start with
+                    it!
                 </p>
             </div>
             <div class="pictures-toggle" @click="toggleRecipesList">
                 <i v-if="recipesList" class="material-icons">navigate_next</i>
                 <i v-else class="material-icons">navigate_before</i>
             </div>
-        </div>
+        </aside>
     </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex'
-import DetailedRecipe from '../components/DetailedRecipe'
-import ProfileRecipeCard from '../components/cards/ProfileRecipeCard'
-import DeleteAccWindow from '../components/modals/DeleteAccWindow'
-import ChangePassWindow from '../components/modals/ChangePassWindow'
-import AppLoader from '../components/ui/AppLoader'
+import { mapActions, mapGetters, mapMutations } from "vuex";
+import DetailedRecipe from "../components/DetailedRecipe";
+import ProfileRecipeCard from "../components/cards/ProfileRecipeCard";
+import DeleteAccWindow from "../components/modals/DeleteAccWindow";
+import ChangePassWindow from "../components/modals/ChangePassWindow";
+import AppLoader from "../components/ui/AppLoader";
 export default {
-    name: 'Profile',
+    name: "Profile",
     components: {
         ProfileRecipeCard,
         DeleteAccWindow,
         ChangePassWindow,
         DetailedRecipe,
-        AppLoader
+        AppLoader,
     },
     data() {
-        return { 
-            recipe: null, 
-            recipesList: false
-        }
+        return {
+            recipe: null,
+            recipesList: false,
+        };
     },
     computed: mapGetters([
-        'loading', 
-        'savedRecipes', 
-        'user', 
-        'provider', 
-        'deleteAccWindow', 
-        'changePassWindow'
+        "loading",
+        "savedRecipes",
+        "user",
+        "provider",
+        "deleteAccWindow",
+        "changePassWindow",
     ]),
     methods: {
-        ...mapActions(['fetchSavedRecipes', 'logout', 'deleteRecipe']),
-        ...mapMutations(['showDeleteAccWindow', 'showChangePassWindow']),
+        ...mapActions(["fetchSavedRecipes", "logout", "deleteRecipe"]),
+        ...mapMutations(["showDeleteAccWindow", "showChangePassWindow"]),
         toggleRecipesList() {
-            this.recipesList = !this.recipesList
+            this.recipesList = !this.recipesList;
         },
         openRecipeDetails(recipe) {
-            this.toggleRecipesList()
-            this.recipe = recipe
+            this.toggleRecipesList();
+            this.recipe = recipe;
         },
         onRecipeDeletes(id) {
-            this.openRecipeDetails(null)
-            this.deleteRecipe(id)
-        }
+            this.openRecipeDetails(null);
+            this.deleteRecipe(id);
+        },
     },
     mounted: function () {
         this.$nextTick(function () {
-            this.fetchSavedRecipes()
-        })
-    }
-}
+            this.fetchSavedRecipes();
+        });
+    },
+};
 </script>
 
 <style lang="less" scoped>
 .page-wrapper {
     display: flex;
     height: 100vh;
-    background-color: #F0FDEB;
+    background-color: @color_firm_secondary;
     overflow: hidden;
 
     .round-button {
@@ -126,27 +127,31 @@ export default {
         top: 30px;
         width: 42px;
         height: 40px;
-        color: #FFFFFF;
+        color: @color_lightest;
         font-weight: bold;
-        background-color: #2C8850;
+        background-color: @color_firm_primary;
         border-radius: 50%;
         transition: 0.2s;
         cursor: pointer;
-        z-index: 4000;
+        z-index: 9;
 
         &:hover {
             top: 29px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.7);
+            box-shadow: @shadow-sm;
         }
 
-        &.back { left: 30px; }
+        &.back {
+            left: 30px;
+        }
 
         &.user {
             left: 80px;
-            transition: 0.7s;
+            transition: 0.5s;
             overflow: hidden;
 
-            .material-icons { display: block; }
+            .material-icons {
+                display: block;
+            }
 
             .settings {
                 display: none;
@@ -158,27 +163,40 @@ export default {
                 padding: 10px;
                 overflow: hidden;
             }
-            
+
             &:hover {
                 width: 180px;
                 height: 200px;
                 border-radius: 26px;
 
-                .material-icons { display: none; }
+                .material-icons {
+                    display: none;
+                }
 
-                .settings { display: block; }
+                .settings {
+                    display: block;
+                }
             }
 
             p {
-                &.username, &.disabled { cursor: default; }
+                &.username,
+                &.disabled {
+                    cursor: default;
+                }
 
-                &.update:hover { color: #D8DD00; }
+                &.update:hover {
+                    color: @color_warning;
+                }
 
-                &.delete:hover { color: #CD0000; }
+                &.delete:hover {
+                    color: @color_danger_dark;
+                }
 
                 &.disabled {
                     text-decoration: line-through;
-                    &:hover { color: #FFFFFF }
+                    &:hover {
+                        color: @color_lightest;
+                    }
                 }
 
                 &.logout {
@@ -188,11 +206,13 @@ export default {
 
                     &:hover {
                         text-decoration: underline;
-                        .exit { display: inline-block; }
+                        .exit {
+                            display: inline-block;
+                        }
                     }
                 }
 
-                .exit { 
+                .exit {
                     display: none;
                     margin: -3px 0 0 7px;
                     font-size: 22px;
@@ -200,7 +220,9 @@ export default {
             }
         }
 
-        i { font-size: 28px; }
+        i {
+            font-size: 28px;
+        }
     }
 
     .recipes {
@@ -215,7 +237,7 @@ export default {
             width: 100%;
             max-width: 420px;
             height: 420px;
-            background-image: url('../assets/profile-page.jpg');
+            background-image: url("../assets/profile-page.jpg");
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
@@ -226,8 +248,8 @@ export default {
         box-sizing: border-box;
         height: 100vh;
         width: 320px;
-        padding: 0px 4px;
-        background-color: #0F0F0F;
+        padding: 0 4px;
+        background-color: @color_darkest;
         overflow: auto;
 
         .centered {
@@ -237,12 +259,14 @@ export default {
             width: 100%;
             height: 100%;
 
-            >div { margin-top: 0px; }
+            > div {
+                margin-top: 0px;
+            }
 
-            >p {
+            > p {
                 font-size: 14px;
                 font-weight: bold;
-                color: #FFFFFF;
+                color: @color_lightest;
             }
         }
 
@@ -251,7 +275,7 @@ export default {
             width: 42px;
             height: 40px;
             border-radius: 50%;
-            background-color: #0F0F0F;
+            background-color: @color_darkest;
         }
     }
 }
@@ -260,7 +284,7 @@ export default {
     .pictures {
         position: fixed;
         top: 0;
-        z-index: 200;
+        z-index: 10;
         transition: 0.4s;
 
         &.opened {
@@ -285,17 +309,13 @@ export default {
             align-items: center;
             position: fixed;
             bottom: 50px;
-            z-index: 250;
+            z-index: 11;
             transition: 0.4s;
 
             i {
-                color: #FFFFFF;
+                color: @color_lightest;
             }
         }
     }
-}
-
-@media screen and (max-width: 900px) {
-
 }
 </style>

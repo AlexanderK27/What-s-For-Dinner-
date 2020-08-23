@@ -1,10 +1,6 @@
 <template>
-    <div class="alert-list" >
-        <div 
-            v-for="alert in alerts"
-            :key="'alert' + alert.id"
-            :class="'alert ' + alert.type"
-        >
+    <div class="alert-list">
+        <div v-for="alert in alerts" :key="'alert' + alert.id" :class="'alert ' + alert.type">
             <p>{{alert.message}}</p>
             <div class="countdown"></div>
         </div>
@@ -12,10 +8,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-    computed: mapGetters(['alerts'])
-}
+    computed: mapGetters(["alerts"]),
+};
 </script>
 
 <style lang="less" scoped>
@@ -24,7 +20,7 @@ export default {
     top: 40px;
     right: 40px;
     text-align: left;
-    z-index: 10000;
+    z-index: 25;
 
     .alert {
         position: relative;
@@ -32,29 +28,37 @@ export default {
         min-height: 50px;
         margin-bottom: 16px;
         padding: 10px 16px;
-        color: #0F0F0F;
+        color: #0f0f0f;
         font-size: 16px;
         font-weight: bold;
-        animation: exit 0.5s 3s both;
+        animation: exit 0.5s 2.4s both;
 
         &.neutral {
-            background-color: #94A1AC;
-            .countdown { background-color: #6C757D; }
+            background-color: @color_neutral;
+            .countdown {
+                background-color: @color_neutral_dark;
+            }
         }
 
         &.success {
-            background-color: #77FF77;
-            .countdown { background-color: #4AFF4A; }
+            background-color: @color_success_light;
+            .countdown {
+                background-color: @color_success;
+            }
         }
 
         &.danger {
-            background-color: #DE7479;
-            .countdown { background-color: #DE4850; }
+            background-color: @color_danger_light;
+            .countdown {
+                background-color: @color_danger;
+            }
         }
 
         &.warning {
-            background-color: #FFDC74;
-            .countdown { background-color:#FFD041; }
+            background-color: @color_warning_light;
+            .countdown {
+                background-color: @color_warning;
+            }
         }
 
         .countdown {
@@ -62,7 +66,7 @@ export default {
             bottom: 0;
             right: 0;
             height: 8px;
-            animation: timer 3s linear;
+            animation: timer 2.4s linear;
             animation-iteration-count: 1;
         }
 
@@ -82,8 +86,12 @@ export default {
         }
 
         @keyframes timer {
-            0% { width: 100%; }
-            100% { width: 0%; }
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+            }
         }
     }
 }
