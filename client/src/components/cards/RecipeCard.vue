@@ -19,23 +19,49 @@
             </div>
             <p class="title">{{recipe.title}}</p>
             <div class="info-wrapper" v-if="recipe.readyInMinutes">
-                <div class="info time" title="Cooking time">
+                <div class="info time">
                     <p>{{recipe.readyInMinutes}}</p>
                     <i class="material-icons md-18">access_time</i>
+                    <div class="tooltip">
+                        <p>Cooking time</p>
+                    </div>
                 </div>
-                <div class="info servings" title="Amount of servings">
+                <div class="info servings">
                     <p>{{recipe.servings}}</p>
                     <i class="material-icons md-18">restaurant</i>
+                    <div class="tooltip">
+                        <p>Amount of servings</p>
+                    </div>
                 </div>
             </div>
             <div class="info-wrapper" v-else>
-                <div class="info unused" title="Unused ingredients">
+                <div class="info unused">
                     <p>{{recipe.unusedIngredients.length}}</p>
                     <i class="material-icons md-18">not_interested</i>
+                    <div class="tooltip">
+                        <p>Unused ingredients</p>
+                        <hr />
+                        <ol>
+                            <li
+                                v-for="(ing, i) of recipe.unusedIngredients"
+                                :key="ing.name + i"
+                            >{{i + 1 + '. ' + ing.name}}</li>
+                        </ol>
+                    </div>
                 </div>
-                <div class="info missed" title="Missed ingredients">
+                <div class="info missed">
                     <p>{{recipe.missedIngredientCount}}</p>
                     <i class="material-icons md-18">playlist_add</i>
+                    <div class="tooltip">
+                        <p>Missed ingredients</p>
+                        <hr />
+                        <ol>
+                            <li
+                                v-for="(ing, i) of recipe.missedIngredients"
+                                :key="ing.name + i"
+                            >{{i + 1 + '. ' + ing.name}}</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,57 +109,99 @@ export default {
         justify-content: space-between;
         flex-grow: 1;
         padding: 8px;
+    }
+}
+.categories {
+    display: flex;
+    justify-content: flex-end;
+}
+.title {
+    flex: 1;
+    color: @color_darkest;
+    font-weight: bold;
+    text-align: center;
+}
+.info-wrapper {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 14px;
+}
+.info {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 40px;
+    padding: 6px 14px;
+    border-radius: 10px;
 
-        .categories {
-            display: flex;
-            justify-content: flex-end;
+    p {
+        margin: 0 6px 0 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    i {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &.time {
+        color: @color_warning_dark;
+    }
+
+    &.servings,
+    &.missed {
+        color: @color_danger_dark;
+    }
+
+    &.missed {
+        i {
+            font-size: 22px;
         }
+    }
 
-        .title {
-            flex: 1;
-            color: @color_darkest;
-            font-weight: bold;
+    .tooltip {
+        visibility: hidden;
+        opacity: 0;
+        box-sizing: border-box;
+        position: absolute;
+        bottom: 28px;
+        width: 160px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        background-color: @color_firm_tertiary;
+        color: @color_lightest;
+        transition: opacity 0.2s ease-out 0.6s;
+
+        &::after {
+            content: " ";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 9px;
+            border-style: solid;
+            border-color: @color_firm_tertiary transparent transparent
+                transparent;
+        }
+        p {
+            width: 100%;
             text-align: center;
+            font-size: 12px;
         }
+        ol {
+            width: 100%;
+            margin: 0;
+            padding: 4px;
+            text-align: left;
+            list-style-type: none;
+        }
+    }
 
-        .info-wrapper {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 14px;
-
-            .info {
-                display: flex;
-                justify-content: center;
-                width: 40px;
-                padding: 6px 14px;
-                border-radius: 10px;
-
-                p {
-                    margin: 0 6px 0 0;
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-
-                i {
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-
-                &.time {
-                    color: @color_warning_dark;
-                }
-
-                &.servings,
-                &.missed {
-                    color: @color_danger_dark;
-                }
-
-                &.missed {
-                    i {
-                        font-size: 22px;
-                    }
-                }
-            }
+    &:hover {
+        .tooltip {
+            visibility: visible;
+            opacity: 1;
         }
     }
 }
@@ -149,17 +217,15 @@ export default {
     .recipe-card {
         > div {
             overflow-y: auto;
-            .title {
-                font-size: 14px;
-            }
-            .info-wrapper {
-                .info {
-                    p,
-                    i {
-                        font-size: 16px;
-                    }
-                }
-            }
+        }
+    }
+    .title {
+        font-size: 14px;
+    }
+    .info {
+        p,
+        i {
+            font-size: 16px;
         }
     }
 }
